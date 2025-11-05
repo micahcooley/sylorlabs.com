@@ -19,7 +19,7 @@ const products = [
     ],
     badge: "FREE",
     badgeColor: "accent-green",
-    status: "Coming Q2 2025",
+    status: "Expected Q2 2026",
     icon: (
       <svg
         width="80"
@@ -61,7 +61,7 @@ const products = [
     ],
     badge: "Price TBD",
     badgeColor: "accent-orange",
-    status: "Coming Q3 2025",
+    status: "Expected Q2 2026",
     icon: (
       <svg
         width="80"
