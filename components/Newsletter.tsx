@@ -15,7 +15,7 @@ export default function Newsletter() {
     setTimeout(() => {
       setIsSubmitted(false);
       setEmail("");
-    }, 3000);
+    }, 5000);
   };
 
   return (
@@ -111,14 +111,26 @@ export default function Newsletter() {
           </motion.form>
 
           {isSubmitted && (
-            <motion.p
-              className="mt-6 text-white font-medium"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+            <motion.div
+              className="mt-8 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border-2 border-white/30"
+              initial={{ opacity: 0, y: -10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0 }}
             >
-              Thank you for subscribing! We&apos;ll keep you updated.
-            </motion.p>
+              <motion.div
+                className="text-5xl mb-3"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.5 }}
+              >
+                ✓
+              </motion.div>
+              <p className="text-2xl font-bold text-white mb-2">
+                You&apos;re signed up for Sylorlabs updates!
+              </p>
+              <p className="text-white/90">
+                We&apos;ll notify you when OpenWave and Wingman launch.
+              </p>
+            </motion.div>
           )}
 
           {/* Floating email icons */}
