@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     // Send confirmation email to the subscriber
     const { data, error } = await resendClient.emails.send({
-      from: "Sylorlabs <onboarding@resend.dev>", // You'll change this to your domain later
+      from: "Sylorlabs <noreply@sylorlabs.com>",
       to: email,
       subject: "You're signed up for Sylorlabs updates! 🎵",
       html: `
