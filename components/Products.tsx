@@ -50,9 +50,8 @@ const products = [
     name: "Wingman",
     tagline: "Your AI Production Assistant",
     description:
-      "Revolutionary AI-powered application that intelligently controls your DAW. Streamline your workflow with voice commands and smart automation.",
+      "Revolutionary AI-powered application that intelligently controls your DAW. Streamline your workflow with smart automation.",
     features: [
-      "Voice-controlled DAW operations",
       "AI-powered mixing suggestions",
       "Smart arrangement assistance",
       "Context-aware automation",
@@ -164,11 +163,11 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
                 transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
               >
                 <motion.span
-                  className="text-primary mt-1 text-xs"
+                  className="text-primary mt-1 text-base"
                   animate={{ scale: isHovered ? [1, 1.2, 1] : 1 }}
                   transition={{ duration: 0.3, delay: i * 0.05 }}
                 >
-                  ▶
+                  •
                 </motion.span>
                 <span className="text-sm">{feature}</span>
               </motion.li>
@@ -203,15 +202,16 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
         </div>
       </div>
 
-      {/* Floating particles effect */}
+      {/* Floating particles effect - GPU accelerated */}
       {isHovered &&
         [...Array(10)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary rounded-full"
+            className="absolute w-1 h-1 bg-primary rounded-full pointer-events-none"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              willChange: "transform, opacity",
             }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{
@@ -223,6 +223,7 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
               duration: 1.5,
               repeat: Infinity,
               delay: i * 0.1,
+              ease: "linear",
             }}
           />
         ))}
@@ -240,8 +241,8 @@ export default function Products() {
       ref={ref}
       className="py-24 bg-gradient-to-b from-light-bg to-dark-bg relative overflow-hidden"
     >
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
+      {/* Animated background elements - GPU accelerated */}
+      <div className="absolute inset-0 pointer-events-none">
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={i}
@@ -251,6 +252,7 @@ export default function Products() {
               height: 400,
               left: `${20 * i}%`,
               top: `${Math.random() * 100}%`,
+              willChange: "transform",
             }}
             animate={{
               y: [0, -50, 0],
@@ -260,6 +262,7 @@ export default function Products() {
               duration: 8 + i * 2,
               repeat: Infinity,
               repeatType: "reverse",
+              ease: "linear",
             }}
           />
         ))}

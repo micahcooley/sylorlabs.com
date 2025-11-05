@@ -15,7 +15,8 @@ export default function About() {
     >
       {/* Animated background gradient */}
       <motion.div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-20 pointer-events-none"
+        style={{ willChange: "background" }}
         animate={{
           background: [
             "radial-gradient(circle at 20% 50%, #6366f1 0%, transparent 50%)",
@@ -23,7 +24,7 @@ export default function About() {
             "radial-gradient(circle at 20% 50%, #6366f1 0%, transparent 50%)",
           ],
         }}
-        transition={{ duration: 10, repeat: Infinity }}
+        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
       />
 
       <div className="container mx-auto px-6 relative z-10">
@@ -85,11 +86,13 @@ export default function About() {
               >
                 <motion.div
                   className="text-5xl mb-4"
+                  style={{ willChange: "transform" }}
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
                     delay: index * 0.2,
+                    ease: "easeInOut",
                   }}
                 >
                   {item.icon}
