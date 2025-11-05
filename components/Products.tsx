@@ -29,20 +29,40 @@ const products = [
         xmlns="http://www.w3.org/2000/svg"
         className="mx-auto"
       >
+        {/* Synth body */}
+        <rect x="8" y="20" width="48" height="32" rx="4" stroke="currentColor" strokeWidth="2.5" />
+
+        {/* Waveform display */}
         <path
-          d="M8 32C8 32 16 16 32 16C48 16 56 32 56 32C56 32 48 48 32 48C16 48 8 32 8 32Z"
+          d="M12 28 Q16 24 20 28 T28 28 Q32 32 36 28 T44 28 Q48 24 52 28"
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2"
           strokeLinecap="round"
-          strokeLinejoin="round"
+          fill="none"
         />
-        <path
-          d="M16 32C16 32 20 24 32 24C44 24 48 32 48 32C48 32 44 40 32 40C20 40 16 32 16 32Z"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+
+        {/* Knobs */}
+        <circle cx="16" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
+        <line x1="16" y1="37" x2="16" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+
+        <circle cx="28" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
+        <line x1="28" y1="37" x2="28" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+
+        <circle cx="40" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
+        <line x1="40" y1="37" x2="40" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+
+        <circle cx="52" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
+        <line x1="52" y1="37" x2="52" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+
+        {/* Piano keys at bottom */}
+        <rect x="12" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="17" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="22" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="27" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="32" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="37" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="42" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="47" y="46" width="3" height="4" fill="currentColor" />
       </svg>
     ),
   },
@@ -70,18 +90,71 @@ const products = [
         xmlns="http://www.w3.org/2000/svg"
         className="mx-auto"
       >
-        <circle cx="32" cy="32" r="24" stroke="currentColor" strokeWidth="3" />
+        {/* Left wing */}
         <path
-          d="M32 20V32L40 40"
+          d="M18 32 Q12 28 8 32 Q12 36 18 32"
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
+          fill="currentColor"
+          fillOpacity="0.2"
         />
-        <circle cx="32" cy="12" r="2" fill="currentColor" />
-        <circle cx="32" cy="52" r="2" fill="currentColor" />
-        <circle cx="12" cy="32" r="2" fill="currentColor" />
-        <circle cx="52" cy="32" r="2" fill="currentColor" />
+        <path
+          d="M20 32 Q16 26 10 28"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M20 32 Q16 38 10 36"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+
+        {/* Right wing */}
+        <path
+          d="M46 32 Q52 28 56 32 Q52 36 46 32"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="currentColor"
+          fillOpacity="0.2"
+        />
+        <path
+          d="M44 32 Q48 26 54 28"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M44 32 Q48 38 54 36"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+
+        {/* AI Brain/Head in center */}
+        <circle cx="32" cy="32" r="10" stroke="currentColor" strokeWidth="2.5" />
+
+        {/* Neural network nodes */}
+        <circle cx="28" cy="28" r="1.5" fill="currentColor" />
+        <circle cx="36" cy="28" r="1.5" fill="currentColor" />
+        <circle cx="28" cy="36" r="1.5" fill="currentColor" />
+        <circle cx="36" cy="36" r="1.5" fill="currentColor" />
+        <circle cx="32" cy="32" r="1.5" fill="currentColor" />
+
+        {/* Neural connections */}
+        <line x1="28" y1="28" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
+        <line x1="36" y1="28" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
+        <line x1="28" y1="36" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
+        <line x1="36" y1="36" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
+
+        {/* Antenna */}
+        <line x1="32" y1="22" x2="32" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="32" cy="15" r="2" fill="currentColor" />
       </svg>
     ),
   },

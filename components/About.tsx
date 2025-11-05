@@ -60,17 +60,61 @@ export default function About() {
               {
                 title: "Innovation",
                 description: "Cutting-edge technology meets creative design",
-                icon: "⚡",
+                icon: (
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
+                    {/* Lightning bolt with circuit paths */}
+                    <path d="M36 8 L28 32 L38 32 L26 56 L42 28 L32 28 Z" fill="currentColor" />
+                    {/* Circuit nodes */}
+                    <circle cx="20" cy="20" r="2" fill="currentColor" />
+                    <circle cx="44" cy="20" r="2" fill="currentColor" />
+                    <circle cx="16" cy="44" r="2" fill="currentColor" />
+                    <circle cx="48" cy="44" r="2" fill="currentColor" />
+                    {/* Circuit connections */}
+                    <path d="M20 20 L28 32" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M44 20 L38 32" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M16 44 L26 56" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M48 44 L42 28" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                ),
               },
               {
                 title: "Quality",
                 description: "Professional-grade tools for professionals",
-                icon: "✨",
+                icon: (
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
+                    {/* Diamond/gem shape */}
+                    <path d="M32 8 L48 24 L32 56 L16 24 Z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="bevel" fill="currentColor" fillOpacity="0.1" />
+                    {/* Inner facets */}
+                    <path d="M32 8 L32 56" stroke="currentColor" strokeWidth="2" />
+                    <path d="M16 24 L48 24" stroke="currentColor" strokeWidth="2" />
+                    <path d="M16 24 L32 32 L48 24" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" fill="currentColor" fillOpacity="0.05" />
+                    {/* Sparkle effects */}
+                    <circle cx="24" cy="12" r="1.5" fill="currentColor" />
+                    <circle cx="40" cy="16" r="1.5" fill="currentColor" />
+                    <circle cx="52" cy="28" r="1.5" fill="currentColor" />
+                    <circle cx="12" cy="28" r="1.5" fill="currentColor" />
+                  </svg>
+                ),
               },
               {
                 title: "Community",
                 description: "Built with feedback from producers worldwide",
-                icon: "🎵",
+                icon: (
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
+                    {/* Connected network of people */}
+                    <circle cx="32" cy="20" r="6" stroke="currentColor" strokeWidth="2.5" fill="currentColor" fillOpacity="0.2" />
+                    <circle cx="16" cy="36" r="5" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
+                    <circle cx="48" cy="36" r="5" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
+                    <circle cx="24" cy="50" r="4" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
+                    <circle cx="40" cy="50" r="4" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
+                    {/* Connection lines */}
+                    <path d="M32 26 L16 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M32 26 L48 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M16 36 L24 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M48 36 L40 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M24 50 L40 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
+                  </svg>
+                ),
               },
             ].map((item, index) => (
               <motion.div
@@ -85,7 +129,7 @@ export default function About() {
                 }}
               >
                 <motion.div
-                  className="text-5xl mb-4"
+                  className="mb-4"
                   style={{ willChange: "transform" }}
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{
