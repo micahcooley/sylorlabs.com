@@ -3,6 +3,8 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Products from "@/components/Products";
 import Roadmap from "@/components/Roadmap";
+import Collaborators from "@/components/Collaborators";
+import Support from "@/components/Support";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
 
@@ -14,6 +16,8 @@ export default function Home() {
       <About />
       <Products />
       <Roadmap />
+      <Collaborators />
+      <Support />
       <Newsletter />
       <Footer />
     </main>
