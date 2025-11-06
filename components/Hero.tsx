@@ -18,35 +18,42 @@ export default function Hero() {
       ref={ref}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-dark-bg via-light-bg to-dark-bg"
     >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-primary opacity-10"
-            style={{
-              width: Math.random() * 300 + 50,
-              height: Math.random() * 300 + 50,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.2, 0.1],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          />
-        ))}
+      {/* Animated background elements - GPU accelerated */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => {
+          const size = Math.random() * 300 + 50;
+          const moveX = Math.random() * 100 - 50;
+          const moveY = Math.random() * 100 - 50;
+          return (
+            <motion.div
+              key={i}
+              className="absolute rounded-full bg-primary opacity-10"
+              style={{
+                width: size,
+                height: size,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                willChange: "transform",
+              }}
+              animate={{
+                x: [0, moveX],
+                y: [0, moveY],
+                scale: [1, 1.2, 1],
+                opacity: [0.1, 0.2, 0.1],
+              }}
+              transition={{
+                duration: Math.random() * 10 + 10,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "linear",
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* Floating particles */}
-      <div className="absolute inset-0">
+      {/* Floating particles - GPU accelerated */}
+      <div className="absolute inset-0 pointer-events-none">
         {[...Array(50)].map((_, i) => (
           <motion.div
             key={`particle-${i}`}
@@ -54,6 +61,7 @@ export default function Hero() {
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              willChange: "transform, opacity",
             }}
             animate={{
               y: [-20, -100],
@@ -63,6 +71,7 @@ export default function Hero() {
               duration: Math.random() * 3 + 2,
               repeat: Infinity,
               delay: Math.random() * 2,
+              ease: "linear",
             }}
           />
         ))}
@@ -86,10 +95,13 @@ export default function Hero() {
           >
             <motion.span
               className="inline-block text-gradient"
+              style={{
+                willChange: "background-position",
+              }}
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
-              transition={{ duration: 5, repeat: Infinity }}
+              transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
             >
               Building the Future
             </motion.span>
@@ -137,21 +149,6 @@ export default function Hero() {
           >
             See What We&apos;re Building
           </motion.a>
-
-          {/* Scroll indicator */}
-          <motion.div
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <div className="w-6 h-10 border-2 border-primary rounded-full flex justify-center">
-              <motion.div
-                className="w-1.5 h-1.5 bg-primary rounded-full mt-2"
-                animate={{ y: [0, 16, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </div>
-          </motion.div>
         </motion.div>
       </motion.div>
     </section>
