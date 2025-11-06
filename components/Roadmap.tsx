@@ -7,31 +7,55 @@ const roadmapStages = [
   {
     stage: "Concept + UX Design",
     status: "completed",
-    icon: "✓",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 16L12 22L26 8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
     description: "UI mockups and user flow planning",
   },
   {
     stage: "Core DSP Engine",
     status: "in-progress",
-    icon: "🔄",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="3" strokeDasharray="4 4" />
+        <circle cx="16" cy="16" r="4" fill="currentColor" />
+      </svg>
+    ),
     description: "JUCE framework research and architecture",
   },
   {
     stage: "UI Implementation",
     status: "upcoming",
-    icon: "⏳",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" opacity="0.3" />
+        <path d="M16 10V16L20 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+      </svg>
+    ),
     description: "Building the interface and controls",
   },
   {
     stage: "Beta Testing",
     status: "upcoming",
-    icon: "⏳",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" opacity="0.3" />
+        <path d="M16 10V16L20 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+      </svg>
+    ),
     description: "Early access for community feedback",
   },
   {
     stage: "Public Launch",
     status: "upcoming",
-    icon: "⏳",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" opacity="0.3" />
+        <path d="M16 10V16L20 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+      </svg>
+    ),
     description: "Full release to the world",
   },
 ];
@@ -51,7 +75,7 @@ function RoadmapStage({ stage, index }: { stage: typeof roadmapStages[0]; index:
       <div className="flex items-start gap-6">
         {/* Status Icon */}
         <motion.div
-          className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${
+          className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center ${
             stage.status === "completed"
               ? "bg-accent-green/20 border-2 border-accent-green text-accent-green"
               : stage.status === "in-progress"

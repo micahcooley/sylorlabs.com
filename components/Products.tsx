@@ -208,11 +208,14 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
                 transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
               >
                 <motion.span
-                  className="text-primary mt-1 text-xs"
+                  className="text-primary mt-1 flex-shrink-0"
                   animate={{ scale: isHovered ? [1, 1.2, 1] : 1 }}
                   transition={{ duration: 0.3, delay: i * 0.05 }}
                 >
-                  ▶
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="6" cy="6" r="5" fill="currentColor" opacity="0.2" />
+                    <circle cx="6" cy="6" r="2.5" fill="currentColor" />
+                  </svg>
                 </motion.span>
                 <span className="text-sm">{feature}</span>
               </motion.li>
