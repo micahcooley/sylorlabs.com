@@ -178,7 +178,7 @@ export default function Collaborators() {
           transition={{ duration: 0.8, delay: 1 }}
         >
           <motion.a
-            href="mailto:collaborate@sylorlabs.com?subject=I want to collaborate!"
+            href="mailto:Micah.cooley@sylorlabs.com?subject=I want to collaborate!"
             className="inline-block px-10 py-4 bg-gradient-primary text-white rounded-full font-semibold text-lg shadow-2xl"
             whileHover={{
               scale: 1.05,
