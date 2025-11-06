@@ -6,155 +6,127 @@ import { useRef, useState } from "react";
 const products = [
   {
     name: "OpenWave",
-    tagline: "The Future of Synthesis",
+    tagline: "Modern Wavetable Synthesizer",
     description:
-      "A powerful and intuitive synthesizer VST3 plugin designed for modern music production. Create stunning sounds with our advanced wavetable engine.",
+      "A wavetable synth being built for producers who want clean power without menu diving.",
     features: [
-      "Advanced wavetable synthesis engine",
-      "200+ factory presets",
-      "Intuitive drag-and-drop modulation",
-      "Built-in effects chain",
-      "MPE support for expressive playing",
-      "Cross-platform: Windows, macOS, Linux",
+      "UI mockups complete",
+      "DSP engine architecture in planning",
+      "JUCE framework research underway",
+      "Aiming for intuitive workflow",
+      "Cross-platform target: Windows, macOS, Linux",
     ],
     badge: "FREE",
     badgeColor: "accent-green",
-    status: "Expected Q2 2026",
+    status: "Status: UI Concepts & DSP Research",
     icon: (
       <svg
         width="80"
         height="80"
-        viewBox="0 0 64 64"
+        viewBox="0 0 80 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="mx-auto"
       >
         {/* Synth body */}
-        <rect x="8" y="20" width="48" height="32" rx="4" stroke="currentColor" strokeWidth="2.5" />
+        <rect x="10" y="25" width="60" height="40" rx="4" stroke="currentColor" strokeWidth="2.5" fill="currentColor" fillOpacity="0.1" />
 
         {/* Waveform display */}
-        <path
-          d="M12 28 Q16 24 20 28 T28 28 Q32 32 36 28 T44 28 Q48 24 52 28"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-        />
+        <rect x="15" y="30" width="50" height="15" rx="2" stroke="currentColor" strokeWidth="2" fill="none" />
+        <path d="M18 37.5 L22 37.5 L26 32 L30 43 L34 37.5 L38 37.5 L42 32 L46 43 L50 37.5 L54 37.5 L58 32 L62 37.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
 
-        {/* Knobs */}
-        <circle cx="16" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
-        <line x1="16" y1="37" x2="16" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        {/* Knobs (4 rotary controls) */}
+        <circle cx="23" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
+        <line x1="23" y1="55" x2="23" y2="51" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
 
-        <circle cx="28" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
-        <line x1="28" y1="37" x2="28" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="37" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
+        <line x1="37" y1="55" x2="40" y2="52" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
 
-        <circle cx="40" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
-        <line x1="40" y1="37" x2="40" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="51" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
+        <line x1="51" y1="55" x2="48" y2="52" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
 
-        <circle cx="52" cy="40" r="3" stroke="currentColor" strokeWidth="2" />
-        <line x1="52" y1="37" x2="52" y2="35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="65" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
+        <line x1="65" y1="55" x2="68" y2="52" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
 
         {/* Piano keys at bottom */}
-        <rect x="12" y="46" width="3" height="4" fill="currentColor" />
-        <rect x="17" y="46" width="3" height="4" fill="currentColor" />
-        <rect x="22" y="46" width="3" height="4" fill="currentColor" />
-        <rect x="27" y="46" width="3" height="4" fill="currentColor" />
-        <rect x="32" y="46" width="3" height="4" fill="currentColor" />
-        <rect x="37" y="46" width="3" height="4" fill="currentColor" />
-        <rect x="42" y="46" width="3" height="4" fill="currentColor" />
-        <rect x="47" y="46" width="3" height="4" fill="currentColor" />
+        <rect x="10" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="16" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="24" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="30" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="36" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="44" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="50" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="58" y="68" width="4" height="10" fill="currentColor" />
+        <rect x="64" y="68" width="4" height="10" fill="currentColor" />
+
+        {/* Black keys */}
+        <rect x="13" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
+        <rect x="19" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
+        <rect x="33" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
+        <rect x="47" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
+        <rect x="53" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
       </svg>
     ),
   },
   {
     name: "Wingman",
-    tagline: "Your AI Production Assistant",
+    tagline: "AI Assistant for Music Production",
     description:
-      "Revolutionary AI-powered application that intelligently controls your DAW. Streamline your workflow with smart automation.",
+      "AI assistant for composition and sound design inside your DAW. Early concept phase.",
     features: [
-      "AI-powered mixing suggestions",
-      "Smart arrangement assistance",
-      "Context-aware automation",
-      "Multi-DAW support (Ableton, FL Studio, Logic, etc.)",
-      "Learning system adapts to your workflow",
+      "Chat UI prototype in progress",
+      "MIDI generation research",
+      "DAW integration exploration",
+      "Target: Multi-DAW support",
+      "AI model selection in research",
     ],
     badge: "Price TBD",
     badgeColor: "accent-orange",
-    status: "Expected Q2 2026",
+    status: "Status: Early Concept Phase",
     icon: (
       <svg
         width="80"
         height="80"
-        viewBox="0 0 64 64"
+        viewBox="0 0 80 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="mx-auto"
       >
         {/* Left wing */}
-        <path
-          d="M18 32 Q12 28 8 32 Q12 36 18 32"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="currentColor"
-          fillOpacity="0.2"
-        />
-        <path
-          d="M20 32 Q16 26 10 28"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <path
-          d="M20 32 Q16 38 10 36"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+        <path d="M15 40 Q10 35 8 30 Q6 25 8 20 L20 30 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
+        <path d="M18 45 Q12 42 9 38 Q6 34 7 30 L20 38 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.15" />
 
         {/* Right wing */}
-        <path
-          d="M46 32 Q52 28 56 32 Q52 36 46 32"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="currentColor"
-          fillOpacity="0.2"
-        />
-        <path
-          d="M44 32 Q48 26 54 28"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <path
-          d="M44 32 Q48 38 54 36"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+        <path d="M65 40 Q70 35 72 30 Q74 25 72 20 L60 30 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
+        <path d="M62 45 Q68 42 71 38 Q74 34 73 30 L60 38 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.15" />
 
-        {/* AI Brain/Head in center */}
-        <circle cx="32" cy="32" r="10" stroke="currentColor" strokeWidth="2.5" />
+        {/* Central AI brain/head */}
+        <circle cx="40" cy="40" r="18" stroke="currentColor" strokeWidth="2.5" fill="currentColor" fillOpacity="0.1" />
 
-        {/* Neural network nodes */}
-        <circle cx="28" cy="28" r="1.5" fill="currentColor" />
-        <circle cx="36" cy="28" r="1.5" fill="currentColor" />
-        <circle cx="28" cy="36" r="1.5" fill="currentColor" />
-        <circle cx="36" cy="36" r="1.5" fill="currentColor" />
-        <circle cx="32" cy="32" r="1.5" fill="currentColor" />
+        {/* Neural network nodes inside head */}
+        <circle cx="35" cy="35" r="2" fill="currentColor" />
+        <circle cx="45" cy="35" r="2" fill="currentColor" />
+        <circle cx="40" cy="40" r="2" fill="currentColor" />
+        <circle cx="33" cy="45" r="2" fill="currentColor" />
+        <circle cx="47" cy="45" r="2" fill="currentColor" />
 
         {/* Neural connections */}
-        <line x1="28" y1="28" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
-        <line x1="36" y1="28" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
-        <line x1="28" y1="36" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
-        <line x1="36" y1="36" x2="32" y2="32" stroke="currentColor" strokeWidth="1" />
+        <line x1="35" y1="35" x2="40" y2="40" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        <line x1="45" y1="35" x2="40" y2="40" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        <line x1="40" y1="40" x2="33" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        <line x1="40" y1="40" x2="47" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        <line x1="35" y1="35" x2="33" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+        <line x1="45" y1="35" x2="47" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
 
-        {/* Antenna */}
-        <line x1="32" y1="22" x2="32" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <circle cx="32" cy="15" r="2" fill="currentColor" />
+        {/* Antenna on top */}
+        <line x1="40" y1="22" x2="40" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="40" cy="10" r="3" fill="currentColor" />
+
+        {/* Signal waves from antenna */}
+        <path d="M35 15 Q32 12 30 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.6" />
+        <path d="M45 15 Q48 12 50 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.6" />
+        <path d="M33 18 Q28 14 25 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
+        <path d="M47 18 Q52 14 55 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
       </svg>
     ),
   },
@@ -236,11 +208,11 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
                 transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
               >
                 <motion.span
-                  className="text-primary mt-1 text-base"
+                  className="text-primary mt-1 text-xs"
                   animate={{ scale: isHovered ? [1, 1.2, 1] : 1 }}
                   transition={{ duration: 0.3, delay: i * 0.05 }}
                 >
-                  •
+                  ▶
                 </motion.span>
                 <span className="text-sm">{feature}</span>
               </motion.li>
@@ -275,16 +247,15 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
         </div>
       </div>
 
-      {/* Floating particles effect - GPU accelerated */}
+      {/* Floating particles effect */}
       {isHovered &&
         [...Array(10)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary rounded-full pointer-events-none"
+            className="absolute w-1 h-1 bg-primary rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              willChange: "transform, opacity",
             }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{
@@ -296,7 +267,6 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
               duration: 1.5,
               repeat: Infinity,
               delay: i * 0.1,
-              ease: "linear",
             }}
           />
         ))}
@@ -314,8 +284,8 @@ export default function Products() {
       ref={ref}
       className="py-24 bg-gradient-to-b from-light-bg to-dark-bg relative overflow-hidden"
     >
-      {/* Animated background elements - GPU accelerated */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Animated background elements */}
+      <div className="absolute inset-0">
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={i}
@@ -325,7 +295,6 @@ export default function Products() {
               height: 400,
               left: `${20 * i}%`,
               top: `${Math.random() * 100}%`,
-              willChange: "transform",
             }}
             animate={{
               y: [0, -50, 0],
@@ -335,7 +304,6 @@ export default function Products() {
               duration: 8 + i * 2,
               repeat: Infinity,
               repeatType: "reverse",
-              ease: "linear",
             }}
           />
         ))}
@@ -355,7 +323,7 @@ export default function Products() {
             }}
             transition={{ duration: 5, repeat: Infinity }}
           >
-            Coming Soon
+            In Development
           </motion.h2>
           <motion.p
             className="text-xl text-gray-400"
@@ -363,7 +331,7 @@ export default function Products() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Revolutionary tools to transform your music production workflow
+            Building innovative tools for music production. Join the journey.
           </motion.p>
         </motion.div>
 

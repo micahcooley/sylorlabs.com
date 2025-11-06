@@ -49,10 +49,10 @@ export default function About() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            At Sylorlabs, we&apos;re passionate about pushing the boundaries of audio
-            software development. Our mission is to create high-quality VST3
-            instruments and tools that empower musicians, producers, and audio
-            engineers to bring their creative visions to life.
+            We&apos;re in the early stages of building professional VST3 instruments and AI tools
+            for music producers. We have UI mockups and are deep in the research phase—exploring
+            JUCE for audio development, testing AI models for DAW integration, and planning
+            the architecture. This is a real journey, and we&apos;re inviting you to follow along.
           </motion.p>
 
           <div className="grid md:grid-cols-3 gap-8 mt-16">

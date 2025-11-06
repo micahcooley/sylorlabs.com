@@ -1,7 +1,7 @@
-import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
-// Initialize Resend lazily to avoid build-time errors
+// Lazy initialization to avoid build-time errors
 let resend: Resend | null = null;
 
 function getResend() {
@@ -25,81 +25,175 @@ export async function POST(request: Request) {
     const resendClient = getResend();
 
     if (!resendClient) {
+      console.error("Resend API key not configured");
       return NextResponse.json(
         { error: "Email service not configured. Please contact support." },
         { status: 500 }
       );
     }
 
-    // Send confirmation email to the subscriber
     const { data, error } = await resendClient.emails.send({
       from: "Sylorlabs <noreply@sylorlabs.com>",
       to: email,
-      subject: "You're signed up for Sylorlabs updates! 🎵",
+      subject: "Welcome to Sylorlabs Beta Waitlist! 🎵",
       html: `
         <!DOCTYPE html>
         <html>
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to Sylorlabs</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f4f4f4;
+              }
+              .container {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 16px;
+                padding: 40px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+              }
+              .header {
+                text-align: center;
+                margin-bottom: 30px;
+              }
+              .logo {
+                font-size: 32px;
+                font-weight: bold;
+                color: white;
+                margin-bottom: 10px;
+              }
+              .badge {
+                display: inline-block;
+                background: rgba(255, 193, 7, 0.2);
+                border: 2px solid #ffc107;
+                color: #ffc107;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: bold;
+                margin-bottom: 20px;
+              }
+              .content {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+              }
+              h1 {
+                color: #667eea;
+                margin-top: 0;
+                font-size: 28px;
+              }
+              p {
+                margin: 15px 0;
+                color: #555;
+              }
+              .highlight {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border-left: 4px solid #667eea;
+              }
+              .products {
+                margin: 20px 0;
+              }
+              .product {
+                margin: 15px 0;
+                padding-left: 20px;
+              }
+              .product-name {
+                font-weight: bold;
+                color: #667eea;
+              }
+              .footer {
+                text-align: center;
+                color: rgba(255,255,255,0.8);
+                font-size: 14px;
+                margin-top: 20px;
+              }
+              .checkmark {
+                font-size: 48px;
+                text-align: center;
+                margin: 20px 0;
+              }
+            </style>
           </head>
-          <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; background-color: #0f172a;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0f172a; padding: 40px 20px;">
-              <tr>
-                <td align="center">
-                  <table width="600" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 20px; padding: 60px 40px; text-align: center;">
-                    <tr>
-                      <td>
-                        <h1 style="color: #ffffff; font-size: 42px; margin: 0 0 20px 0; font-weight: 800;">
-                          SYLORLABS
-                        </h1>
-                        <div style="font-size: 60px; margin: 20px 0;">✓</div>
-                        <h2 style="color: #ffffff; font-size: 28px; margin: 0 0 20px 0; font-weight: 700;">
-                          You're signed up for Sylorlabs updates!
-                        </h2>
-                        <p style="color: rgba(255, 255, 255, 0.9); font-size: 18px; line-height: 1.6; margin: 0 0 30px 0;">
-                          Thank you for joining our community! We'll notify you when <strong>OpenWave</strong> and <strong>Wingman</strong> launch.
-                        </p>
-                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 30px; margin: 30px 0; backdrop-filter: blur(10px);">
-                          <h3 style="color: #ffffff; font-size: 20px; margin: 0 0 15px 0;">Coming Soon:</h3>
-                          <p style="color: rgba(255, 255, 255, 0.9); font-size: 16px; margin: 10px 0;">
-                            🎹 <strong>OpenWave</strong> - Advanced wavetable synthesizer (FREE)
-                          </p>
-                          <p style="color: rgba(255, 255, 255, 0.9); font-size: 16px; margin: 10px 0;">
-                            🤖 <strong>Wingman</strong> - AI-powered DAW assistant
-                          </p>
-                          <p style="color: rgba(255, 255, 255, 0.7); font-size: 14px; margin: 15px 0 0 0; font-style: italic;">
-                            Expected Q2 2026
-                          </p>
-                        </div>
-                        <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; margin: 30px 0 0 0;">
-                          Professional VST3 Audio Tools for Music Producers
-                        </p>
-                      </td>
-                    </tr>
-                  </table>
-                  <p style="color: #64748b; font-size: 12px; margin: 20px 0 0 0;">
-                    © 2025 Sylorlabs. All rights reserved.
-                  </p>
-                </td>
-              </tr>
-            </table>
+          <body>
+            <div class="container">
+              <div class="header">
+                <div class="logo">Sylorlabs</div>
+                <div class="badge">🚧 Beta Waitlist</div>
+              </div>
+
+              <div class="content">
+                <div class="checkmark">✓</div>
+                <h1>You're on the Beta Waitlist!</h1>
+
+                <p>Thanks for joining us on this journey! You'll be among the first to test our tools as we build them.</p>
+
+                <div class="highlight">
+                  <strong>What to expect:</strong>
+                  <div class="products">
+                    <div class="product">
+                      <span class="product-name">OpenWave</span> - Modern wavetable synthesizer<br>
+                      <small>Currently: UI concepts & DSP research</small>
+                    </div>
+                    <div class="product">
+                      <span class="product-name">Wingman</span> - AI assistant for music production<br>
+                      <small>Currently: Early concept phase</small>
+                    </div>
+                  </div>
+                </div>
+
+                <p>We're being completely transparent about our progress. We have UI mockups and are deep in research—exploring JUCE for audio development, testing AI models, and planning the architecture.</p>
+
+                <p>As a beta waitlist member, you'll get:</p>
+                <ul>
+                  <li>Early access to test versions before anyone else</li>
+                  <li>Direct input on features and workflow</li>
+                  <li>Updates on development milestones</li>
+                  <li>Special pricing when we launch</li>
+                </ul>
+
+                <p>We'll keep you posted as we hit major milestones. This is a real journey, and we're inviting you to be part of it.</p>
+
+                <p style="margin-top: 30px;">
+                  <strong>— The Sylorlabs Team</strong>
+                </p>
+              </div>
+
+              <div class="footer">
+                Building the future of music production, one step at a time.
+              </div>
+            </div>
           </body>
         </html>
       `,
     });
 
     if (error) {
-      console.error("Resend error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("Resend API error:", error);
+      return NextResponse.json(
+        { error: "Failed to send email. Please try again." },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ success: true, data });
-  } catch (error) {
-    console.error("Subscribe error:", error);
     return NextResponse.json(
-      { error: "Failed to subscribe" },
+      { message: "Successfully subscribed!", data },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Subscribe endpoint error:", error);
+    return NextResponse.json(
+      { error: "An unexpected error occurred" },
       { status: 500 }
     );
   }
