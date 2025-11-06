@@ -6,20 +6,19 @@ import { useRef, useState } from "react";
 const products = [
   {
     name: "OpenWave",
-    tagline: "The Future of Synthesis",
+    tagline: "Modern Wavetable Synthesizer",
     description:
-      "A powerful and intuitive synthesizer VST3 plugin designed for modern music production. Create stunning sounds with our advanced wavetable engine.",
+      "A wavetable synth being built for producers who want clean power without menu diving.",
     features: [
-      "Advanced wavetable synthesis engine",
-      "200+ factory presets",
-      "Intuitive drag-and-drop modulation",
-      "Built-in effects chain",
-      "MPE support for expressive playing",
-      "Cross-platform: Windows, macOS, Linux",
+      "UI mockups complete",
+      "DSP engine architecture in planning",
+      "JUCE framework research underway",
+      "Aiming for intuitive workflow",
+      "Cross-platform target: Windows, macOS, Linux",
     ],
     badge: "FREE",
     badgeColor: "accent-green",
-    status: "Coming Q2 2025",
+    status: "Status: UI Concepts & DSP Research",
     icon: (
       <svg
         width="80"
@@ -48,20 +47,19 @@ const products = [
   },
   {
     name: "Wingman",
-    tagline: "Your AI Production Assistant",
+    tagline: "AI Assistant for Music Production",
     description:
-      "Revolutionary AI-powered application that intelligently controls your DAW. Streamline your workflow with voice commands and smart automation.",
+      "AI assistant for composition and sound design inside your DAW. Early concept phase.",
     features: [
-      "Voice-controlled DAW operations",
-      "AI-powered mixing suggestions",
-      "Smart arrangement assistance",
-      "Context-aware automation",
-      "Multi-DAW support (Ableton, FL Studio, Logic, etc.)",
-      "Learning system adapts to your workflow",
+      "Chat UI prototype in progress",
+      "MIDI generation research",
+      "DAW integration exploration",
+      "Target: Multi-DAW support",
+      "AI model selection in research",
     ],
     badge: "Price TBD",
     badgeColor: "accent-orange",
-    status: "Coming Q3 2025",
+    status: "Status: Early Concept Phase",
     icon: (
       <svg
         width="80"
@@ -279,7 +277,7 @@ export default function Products() {
             }}
             transition={{ duration: 5, repeat: Infinity }}
           >
-            Coming Soon
+            In Development
           </motion.h2>
           <motion.p
             className="text-xl text-gray-400"
@@ -287,7 +285,7 @@ export default function Products() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Revolutionary tools to transform your music production workflow
+            Building innovative tools for music production. Join the journey.
           </motion.p>
         </motion.div>
 

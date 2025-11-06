@@ -91,7 +91,7 @@ export default function Hero() {
               }}
               transition={{ duration: 5, repeat: Infinity }}
             >
-              Professional VST3
+              Building the Future
             </motion.span>
             <br />
             <motion.span
@@ -100,19 +100,28 @@ export default function Hero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              Audio Tools
+              of Music Production
             </motion.span>
           </motion.h2>
 
           <motion.p
-            className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto"
+            className="text-xl md:text-2xl text-gray-400 mb-6 max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            Sylorlabs is a company dedicated to creating innovative VST3 products
-            for music producers and audio professionals.
+            Creating innovative VST3 instruments and AI-powered tools for producers.
+            Currently in early development.
           </motion.p>
+
+          <motion.div
+            className="inline-block px-6 py-2 bg-yellow-500/20 border-2 border-yellow-500 rounded-full mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+          >
+            <span className="text-yellow-400 font-semibold">🚧 In Development - Join Early</span>
+          </motion.div>
 
           <motion.a
             href="#products"
@@ -126,7 +135,7 @@ export default function Hero() {
             }}
             whileTap={{ scale: 0.95 }}
           >
-            Explore Our Products
+            See What We&apos;re Building
           </motion.a>
 
           {/* Scroll indicator */}

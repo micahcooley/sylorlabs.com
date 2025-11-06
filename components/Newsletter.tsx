@@ -59,7 +59,7 @@ export default function Newsletter() {
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8 }}
           >
-            Stay Updated
+            Join Early Beta Access
           </motion.h2>
 
           <motion.p
@@ -68,8 +68,8 @@ export default function Newsletter() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Be the first to know when our products launch. Get exclusive early
-            access and special offers.
+            Be first to test OpenWave and Wingman. Get beta access before anyone else
+            and help shape the future of these tools.
           </motion.p>
 
           <motion.form
@@ -117,8 +117,20 @@ export default function Newsletter() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
             >
-              Thank you for subscribing! We&apos;ll keep you updated.
-            </motion.p>
+              <motion.div
+                className="text-5xl mb-3"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.5 }}
+              >
+                ✓
+              </motion.div>
+              <p className="text-2xl font-bold text-white mb-2">
+                You&apos;re on the beta waitlist!
+              </p>
+              <p className="text-white/90">
+                You&apos;ll get early access to test OpenWave and Wingman before anyone else.
+              </p>
+            </motion.div>
           )}
 
           {/* Floating email icons */}
