@@ -1,11 +1,20 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
 
 export default function Collaborators() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
   const roles = [
     {
@@ -72,6 +81,36 @@ export default function Collaborators() {
       ),
     },
   ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+
+    try {
+      const response = await fetch("/api/collaborate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      setSubmitStatus("success");
+      setFormData({ name: "", email: "", role: "", message: "" });
+      setTimeout(() => {
+        setShowModal(false);
+        setSubmitStatus("idle");
+      }, 2000);
+    } catch (error) {
+      console.error("Error:", error);
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section
@@ -177,17 +216,17 @@ export default function Collaborators() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 1 }}
         >
-          <motion.a
-            href="mailto:Micah.cooley@sylorlabs.com?subject=I want to collaborate!"
-            className="inline-block px-10 py-4 bg-gradient-primary text-white rounded-full font-semibold text-lg shadow-2xl"
+          <motion.button
+            onClick={() => setShowModal(true)}
+            className="inline-block px-10 py-4 bg-gradient-primary text-white rounded-full font-semibold text-lg shadow-2xl cursor-pointer"
             whileHover={{
               scale: 1.05,
               boxShadow: "0 20px 40px rgba(99, 102, 241, 0.6)",
             }}
             whileTap={{ scale: 0.95 }}
           >
-            Get in Touch →
-          </motion.a>
+            Join Now →
+          </motion.button>
           <p className="text-sm text-gray-500 mt-4">
             Or reach out on Discord, Twitter, or GitHub (links in footer)
           </p>
@@ -224,6 +263,119 @@ export default function Collaborators() {
           </ul>
         </motion.div>
       </div>
+
+      {/* Modal Popup */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowModal(false)}
+          >
+            <motion.div
+              className="bg-light-bg rounded-3xl p-8 max-w-md w-full relative border-2 border-primary/30"
+              initial={{ scale: 0.9, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 50 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl"
+              >
+                ×
+              </button>
+
+              <h3 className="text-3xl font-bold mb-2 text-gradient">Join the Team</h3>
+              <p className="text-gray-400 mb-6">Tell us about yourself and how you want to contribute!</p>
+
+              {submitStatus === "success" ? (
+                <motion.div
+                  className="text-center py-8"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                >
+                  <div className="text-6xl mb-4">✓</div>
+                  <p className="text-2xl font-bold text-accent-green">Message Sent!</p>
+                  <p className="text-gray-400 mt-2">We&apos;ll get back to you soon.</p>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-300">Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-dark-bg border-2 border-primary/30 text-white focus:border-primary focus:outline-none"
+                      placeholder="Your name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-300">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-dark-bg border-2 border-primary/30 text-white focus:border-primary focus:outline-none"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-300">Role Interest</label>
+                    <select
+                      required
+                      value={formData.role}
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-dark-bg border-2 border-primary/30 text-white focus:border-primary focus:outline-none"
+                    >
+                      <option value="">Select a role...</option>
+                      <option value="C++ / DSP Developer">C++ / DSP Developer</option>
+                      <option value="Music Producer">Music Producer</option>
+                      <option value="UI/UX Designer">UI/UX Designer</option>
+                      <option value="AI/ML Engineer">AI/ML Engineer</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-300">Message</label>
+                    <textarea
+                      required
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-dark-bg border-2 border-primary/30 text-white focus:border-primary focus:outline-none h-32 resize-none"
+                      placeholder="Tell us about your experience and why you want to collaborate..."
+                    />
+                  </div>
+
+                  {submitStatus === "error" && (
+                    <div className="text-red-400 text-sm">
+                      Failed to send message. Please try again.
+                    </div>
+                  )}
+
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-4 bg-gradient-primary text-white rounded-xl font-bold text-lg disabled:opacity-50"
+                    whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                  >
+                    {isSubmitting ? "Sending..." : "Submit"}
+                  </motion.button>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
