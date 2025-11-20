@@ -5,20 +5,23 @@ import { useRef, useState } from "react";
 
 const products = [
   {
-    name: "OpenWave",
-    tagline: "Modern Wavetable Synthesizer",
+    name: "Zenith DAW",
+    tagline: "The Ultimate Digital Audio Workstation",
     description:
-      "A wavetable synth being built for producers who want clean power without menu diving.",
+      "A revolutionary DAW combining the best aspects of every workstation with integrated Wingman AI assistant and OpenWave synthesizer. Featuring an intuitive, beautiful UI designed for maximum workflow efficiency.",
     features: [
-      "UI mockups complete",
-      "DSP engine architecture in planning",
-      "JUCE framework research underway",
-      "Aiming for intuitive workflow",
-      "Cross-platform target: Windows, macOS, Linux",
+      "Integrated Wingman AI assistant for intelligent music production",
+      "Built-in OpenWave wavetable synthesizer",
+      "Best features from industry-leading DAWs combined",
+      "Stunning, intuitive UI designed for producers",
+      "Advanced DSP engine with real-time processing",
+      "Smart MIDI generation and composition tools",
+      "Seamless workflow with zero menu diving",
+      "Cross-platform: Windows, macOS, Linux",
     ],
-    badge: "FREE",
+    badge: "FLAGSHIP",
     badgeColor: "accent-green",
-    status: "Status: UI Concepts & DSP Research",
+    status: "Status: Early Development - The Future of Production",
     icon: (
       <svg
         width="80"
@@ -28,105 +31,42 @@ const products = [
         xmlns="http://www.w3.org/2000/svg"
         className="mx-auto"
       >
-        {/* Synth body */}
-        <rect x="10" y="25" width="60" height="40" rx="4" stroke="currentColor" strokeWidth="2.5" fill="currentColor" fillOpacity="0.1" />
+        {/* Outer circular ring - representing "Zenith" */}
+        <circle cx="40" cy="40" r="32" stroke="currentColor" strokeWidth="3" fill="none" opacity="0.6" />
+        <circle cx="40" cy="40" r="28" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.05" />
 
-        {/* Waveform display */}
-        <rect x="15" y="30" width="50" height="15" rx="2" stroke="currentColor" strokeWidth="2" fill="none" />
-        <path d="M18 37.5 L22 37.5 L26 32 L30 43 L34 37.5 L38 37.5 L42 32 L46 43 L50 37.5 L54 37.5 L58 32 L62 37.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
+        {/* Central star/diamond - peak/zenith symbol */}
+        <path d="M40 15 L45 35 L55 40 L45 45 L40 65 L35 45 L25 40 L35 35 Z" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
 
-        {/* Knobs (4 rotary controls) */}
-        <circle cx="23" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
-        <line x1="23" y1="55" x2="23" y2="51" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        {/* Inner core */}
+        <circle cx="40" cy="40" r="8" fill="currentColor" fillOpacity="0.4" />
+        <circle cx="40" cy="40" r="5" fill="currentColor" />
 
-        <circle cx="37" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
-        <line x1="37" y1="55" x2="40" y2="52" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        {/* Waveform integrated into design - representing OpenWave */}
+        <path d="M15 40 Q20 35 25 40 Q30 45 35 40" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.5" strokeLinecap="round" />
+        <path d="M45 40 Q50 35 55 40 Q60 45 65 40" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.5" strokeLinecap="round" />
 
-        <circle cx="51" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
-        <line x1="51" y1="55" x2="48" y2="52" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        {/* AI nodes - representing Wingman AI */}
+        <circle cx="40" cy="20" r="3" fill="currentColor" opacity="0.7" />
+        <circle cx="60" cy="40" r="3" fill="currentColor" opacity="0.7" />
+        <circle cx="40" cy="60" r="3" fill="currentColor" opacity="0.7" />
+        <circle cx="20" cy="40" r="3" fill="currentColor" opacity="0.7" />
 
-        <circle cx="65" cy="55" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
-        <line x1="65" y1="55" x2="68" y2="52" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        {/* Connection lines from AI nodes to center */}
+        <line x1="40" y1="20" x2="40" y2="32" stroke="currentColor" strokeWidth="1.5" opacity="0.4" strokeDasharray="2 2" />
+        <line x1="60" y1="40" x2="48" y2="40" stroke="currentColor" strokeWidth="1.5" opacity="0.4" strokeDasharray="2 2" />
+        <line x1="40" y1="60" x2="40" y2="48" stroke="currentColor" strokeWidth="1.5" opacity="0.4" strokeDasharray="2 2" />
+        <line x1="20" y1="40" x2="32" y2="40" stroke="currentColor" strokeWidth="1.5" opacity="0.4" strokeDasharray="2 2" />
 
-        {/* Piano keys at bottom */}
-        <rect x="10" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="16" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="24" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="30" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="36" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="44" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="50" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="58" y="68" width="4" height="10" fill="currentColor" />
-        <rect x="64" y="68" width="4" height="10" fill="currentColor" />
+        {/* Orbital rings - representing "all DAWs combined" */}
+        <circle cx="40" cy="40" r="36" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.3" strokeDasharray="4 4" />
+        <circle cx="40" cy="40" r="24" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.3" strokeDasharray="4 4" />
 
-        {/* Black keys */}
-        <rect x="13" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
-        <rect x="19" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
-        <rect x="33" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
-        <rect x="47" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
-        <rect x="53" y="68" width="2.5" height="6" fill="currentColor" opacity="0.3" />
-      </svg>
-    ),
-  },
-  {
-    name: "Wingman",
-    tagline: "AI Assistant for Music Production",
-    description:
-      "AI assistant for composition and sound design inside your DAW. Early concept phase.",
-    features: [
-      "Chat UI prototype in progress",
-      "MIDI generation research",
-      "DAW integration exploration",
-      "Target: Multi-DAW support",
-      "AI model selection in research",
-    ],
-    badge: "Price TBD",
-    badgeColor: "accent-orange",
-    status: "Status: Early Concept Phase",
-    icon: (
-      <svg
-        width="80"
-        height="80"
-        viewBox="0 0 80 80"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="mx-auto"
-      >
-        {/* Left wing */}
-        <path d="M15 40 Q10 35 8 30 Q6 25 8 20 L20 30 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
-        <path d="M18 45 Q12 42 9 38 Q6 34 7 30 L20 38 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.15" />
-
-        {/* Right wing */}
-        <path d="M65 40 Q70 35 72 30 Q74 25 72 20 L60 30 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
-        <path d="M62 45 Q68 42 71 38 Q74 34 73 30 L60 38 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.15" />
-
-        {/* Central AI brain/head */}
-        <circle cx="40" cy="40" r="18" stroke="currentColor" strokeWidth="2.5" fill="currentColor" fillOpacity="0.1" />
-
-        {/* Neural network nodes inside head */}
-        <circle cx="35" cy="35" r="2" fill="currentColor" />
-        <circle cx="45" cy="35" r="2" fill="currentColor" />
-        <circle cx="40" cy="40" r="2" fill="currentColor" />
-        <circle cx="33" cy="45" r="2" fill="currentColor" />
-        <circle cx="47" cy="45" r="2" fill="currentColor" />
-
-        {/* Neural connections */}
-        <line x1="35" y1="35" x2="40" y2="40" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-        <line x1="45" y1="35" x2="40" y2="40" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-        <line x1="40" y1="40" x2="33" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-        <line x1="40" y1="40" x2="47" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-        <line x1="35" y1="35" x2="33" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-        <line x1="45" y1="35" x2="47" y2="45" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-
-        {/* Antenna on top */}
-        <line x1="40" y1="22" x2="40" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <circle cx="40" cy="10" r="3" fill="currentColor" />
-
-        {/* Signal waves from antenna */}
-        <path d="M35 15 Q32 12 30 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.6" />
-        <path d="M45 15 Q48 12 50 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.6" />
-        <path d="M33 18 Q28 14 25 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
-        <path d="M47 18 Q52 14 55 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
+        {/* Corner accent dots */}
+        <circle cx="10" cy="10" r="2" fill="currentColor" opacity="0.5" />
+        <circle cx="70" cy="10" r="2" fill="currentColor" opacity="0.5" />
+        <circle cx="10" cy="70" r="2" fill="currentColor" opacity="0.5" />
+        <circle cx="70" cy="70" r="2" fill="currentColor" opacity="0.5" />
       </svg>
     ),
   },
@@ -207,16 +147,7 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
               >
-                <motion.span
-                  className="text-primary mt-1 flex-shrink-0"
-                  animate={{ scale: isHovered ? [1, 1.2, 1] : 1 }}
-                  transition={{ duration: 0.3, delay: i * 0.05 }}
-                >
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="6" cy="6" r="5" fill="currentColor" opacity="0.2" />
-                    <circle cx="6" cy="6" r="2.5" fill="currentColor" />
-                  </svg>
-                </motion.span>
+                <span className="text-primary mt-1 flex-shrink-0">•</span>
                 <span className="text-sm">{feature}</span>
               </motion.li>
             ))}
@@ -338,7 +269,7 @@ export default function Products() {
           </motion.p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+        <div className="flex justify-center max-w-4xl mx-auto">
           {products.map((product, index) => (
             <ProductCard key={product.name} product={product} index={index} />
           ))}
