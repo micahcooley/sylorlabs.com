@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { exchangeGoogleCode, findOrCreateGoogleUser, generateToken } from '@/lib/auth';
-import { isValidRedirectUrl } from '@/lib/security';
+import { isValidRedirectUrl, getBaseUrl } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
   try {
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       if (!isValidRedirectUrl(state)) {
         console.error('Invalid redirect URL detected:', state);
         return NextResponse.redirect(
-          `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/login?error=invalid_redirect`
+          `${getBaseUrl()}/login?error=invalid_redirect`
         );
       }
       const separator = state.includes('?') ? '&' : '?';
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Default flow: redirect to home page with token for auto-login
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = getBaseUrl();
     let finalRedirectUrl = `${baseUrl}/?token=${token}&success=true`;
     
     // Only add redirect_uri if it's a desktop app flow
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Google OAuth error:', error);
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/login?error=oauth_failed`
+      `${getBaseUrl()}/login?error=oauth_failed`
     );
   }
 }

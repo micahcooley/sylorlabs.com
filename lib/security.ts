@@ -79,9 +79,23 @@ export function isTrustedImageUrl(url: string): boolean {
 }
 
 /**
- * Gets the current base URL for CORS headers
- * @returns The base URL or fallback
+ * Gets the current base URL for redirects and links
+ * @returns The base URL for the current environment
  */
 export function getBaseUrl(): string {
+  // In production, Vercel provides the URL automatically
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Fallback to environment variable or localhost for development
   return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+}
+
+/**
+ * Gets the Google OAuth redirect URI for the current environment
+ * @returns The OAuth redirect URI
+ */
+export function getGoogleRedirectUri(): string {
+  const baseUrl = getBaseUrl();
+  return `${baseUrl}/api/auth/google/callback`;
 }
