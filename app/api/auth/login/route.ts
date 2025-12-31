@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateUser, generateToken } from '@/lib/auth';
+import { isValidRedirectUrl } from '@/lib/security';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +25,14 @@ export async function POST(request: NextRequest) {
     const token = generateToken(user.id, user.email);
 
     if (redirectUri) {
+      // Validate the redirect URI to prevent open redirect attacks
+      if (!isValidRedirectUrl(redirectUri)) {
+        return NextResponse.json(
+          { error: 'Invalid redirect URL' },
+          { status: 400 }
+        );
+      }
+      
       const separator = redirectUri.includes('?') ? '&' : '?';
       const redirectUrl = `${redirectUri}${separator}token=${token}`;
       
@@ -35,6 +44,9 @@ export async function POST(request: NextRequest) {
           id: user.id,
           username: user.username,
           email: user.email,
+          profilePicture: user.profilePicture,
+          googleId: user.googleId,
+          hasGoogleLinked: !!user.googleId,
         },
       });
     }

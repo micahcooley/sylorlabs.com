@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { randomUUID } from 'crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
@@ -75,7 +76,7 @@ export async function createUser(username: string | undefined, email: string, pa
 
   const hashedPassword = await hashPassword(password);
   const user: User = {
-    id: Math.random().toString(36).substring(7),
+    id: randomUUID(),
     username,
     email,
     password: hashedPassword,
@@ -170,7 +171,7 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
     } else {
       // Create a new user with Google info (username is optional)
       user = {
-        id: Math.random().toString(36).substring(7),
+        id: randomUUID(),
         username: undefined, // Google users don't need usernames
         email: googleProfile.email,
         googleId: googleProfile.id,

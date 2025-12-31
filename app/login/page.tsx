@@ -171,12 +171,6 @@ export default function LoginPage() {
                   Forgot your password?
                 </Link>
               </div>
-              <p className="text-gray-400 text-sm">
-                Don't have an account?{' '}
-                <Link href="/signup" className="text-neon-cyan hover:text-neon-magenta transition-colors duration-200">
-                  Sign up
-                </Link>
-              </p>
             </div>
 
             <button
