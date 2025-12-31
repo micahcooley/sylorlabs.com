@@ -1,10 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google/callback';
+import { randomUUID } from 'crypto';
+import { getGoogleRedirectUri } from './security';
 
 export interface GoogleProfile {
   id: string;
@@ -43,6 +40,8 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function generateToken(userId: string, email: string): string {
+  const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+  
   return jwt.sign(
     { userId, email },
     JWT_SECRET,
@@ -52,6 +51,7 @@ export function generateToken(userId: string, email: string): string {
 
 export function verifyToken(token: string): { userId: string; email: string } | null {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
     return jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
   } catch {
     return null;
@@ -75,7 +75,7 @@ export async function createUser(username: string | undefined, email: string, pa
 
   const hashedPassword = await hashPassword(password);
   const user: User = {
-    id: Math.random().toString(36).substring(7),
+    id: randomUUID(),
     username,
     email,
     password: hashedPassword,
@@ -106,6 +106,8 @@ export async function authenticateUser(emailOrUsername: string, password: string
 }
 
 export function getGoogleAuthUrl(redirectUri?: string, customState?: string): string {
+  const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+  
   if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === '') {
     throw new Error('Google OAuth is not configured. Please set GOOGLE_CLIENT_ID in your environment variables.');
   }
@@ -119,7 +121,7 @@ export function getGoogleAuthUrl(redirectUri?: string, customState?: string): st
 
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: GOOGLE_REDIRECT_URI,
+    redirect_uri: getGoogleRedirectUri(),
     response_type: 'code',
     scope: 'openid email profile',
     state: stateValue,
@@ -131,6 +133,9 @@ export function getGoogleAuthUrl(redirectUri?: string, customState?: string): st
 }
 
 export async function exchangeGoogleCode(code: string): Promise<GoogleProfile> {
+  const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+  const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+  
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -138,7 +143,7 @@ export async function exchangeGoogleCode(code: string): Promise<GoogleProfile> {
       code,
       client_id: GOOGLE_CLIENT_ID,
       client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: GOOGLE_REDIRECT_URI,
+      redirect_uri: getGoogleRedirectUri(),
       grant_type: 'authorization_code',
     }),
   });
@@ -170,7 +175,7 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
     } else {
       // Create a new user with Google info (username is optional)
       user = {
-        id: Math.random().toString(36).substring(7),
+        id: randomUUID(),
         username: undefined, // Google users don't need usernames
         email: googleProfile.email,
         googleId: googleProfile.id,

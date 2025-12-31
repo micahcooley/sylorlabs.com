@@ -11,7 +11,7 @@ export default function ZenithPage() {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl font-bold mb-6 text-gradient">Zenith DAW</h1>
             <p className="text-xl text-gray-300 mb-8">
-              Professional music production software that doesn't break the bank
+              Professional music production software that doesn&apos;t break the bank
             </p>
             
             <div className="glass rounded-3xl p-8 md:p-12">

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail } from '@/lib/auth';
-import crypto from 'crypto';
-
-// In-memory store for reset tokens (in production, use a database)
-const resetTokens = new Map<string, { email: string; expires: Date }>();
+import { createResetToken } from '@/lib/reset-tokens';
+import { getBaseUrl } from '@/lib/security';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,15 +25,11 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Generate reset token
-    const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // 1 hour from now
-    
-    // Store token (in production, store in database)
-    resetTokens.set(token, { email, expires });
+    // Generate JWT-based reset token
+    const token = createResetToken(email);
 
     // In development, log the reset link
-    const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/login/password-reset/confirm?token=${token}`;
+    const resetUrl = `${getBaseUrl()}/login/password-reset/confirm?token=${token}`;
     console.log('Password reset link:', resetUrl);
     console.log('This would be sent to email:', email);
 
@@ -57,4 +51,3 @@ export async function POST(request: NextRequest) {
 }
 
 // Export the reset tokens store for use in the confirm route
-export { resetTokens };

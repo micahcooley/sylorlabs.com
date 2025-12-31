@@ -13,8 +13,10 @@ export default function ThemeProvider({
     const theme = generateColorTheme();
     applyTheme(theme);
 
-    // Optional: Log the theme for debugging
-    console.log("🎨 Random theme applied:", theme);
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log("🎨 Random theme applied:", theme);
+    }
   }, []);
 
   return <>{children}</>;
