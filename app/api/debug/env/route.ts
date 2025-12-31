@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getBaseUrl, getGoogleRedirectUri } from '@/lib/security';
 
 export async function GET() {
   const envVars = {
@@ -7,6 +8,8 @@ export async function GET() {
     VERCEL_URL: process.env.VERCEL_URL || 'NOT SET',
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'NOT SET',
     GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || 'NOT SET',
+    computedBaseUrl: getBaseUrl(),
+    computedGoogleRedirectUri: getGoogleRedirectUri(),
   };
 
   return NextResponse.json(envVars);

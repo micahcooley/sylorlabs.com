@@ -96,6 +96,11 @@ export function getBaseUrl(): string {
  * @returns The OAuth redirect URI
  */
 export function getGoogleRedirectUri(): string {
-  const baseUrl = getBaseUrl();
+  // In production, Vercel provides the URL automatically
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}/api/auth/google/callback`;
+  }
+  // Fallback to environment variable or localhost for development
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   return `${baseUrl}/api/auth/google/callback`;
 }
