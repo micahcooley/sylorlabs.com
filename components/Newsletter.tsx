@@ -87,7 +87,7 @@ export default function Newsletter() {
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8 }}
           >
-            Join Early Beta Access
+            Get Notified for Beta
           </motion.h2>
 
           <motion.p
@@ -96,8 +96,8 @@ export default function Newsletter() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Be first to test OpenWave and Wingman. Get beta access before anyone else
-            and help shape the future of these tools.
+            Be first to test our tools. Get beta access before anyone else
+            and help shape the future of music production.
           </motion.p>
 
           <motion.form
@@ -135,7 +135,7 @@ export default function Newsletter() {
               }
               transition={{ duration: 0.5 }}
             >
-              {isLoading ? "Sending..." : isSubmitted ? "✓ Subscribed!" : "Notify Me"}
+              {isLoading ? "Sending..." : isSubmitted ? "Subscribed!" : "Notify Me"}
             </motion.button>
           </motion.form>
 
@@ -145,8 +145,12 @@ export default function Newsletter() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <p className="text-red-200 font-medium">
-                ⚠️ {error}
+              <p className="text-red-200 font-medium flex items-center justify-center gap-2">
+                <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 5 L10 10 M10 15 L10 15.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="2" fill="none"/>
+                </svg>
+                {error}
               </p>
             </motion.div>
           )}
@@ -163,13 +167,16 @@ export default function Newsletter() {
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.5 }}
               >
-                ✓
+                <svg className="w-12 h-12 mx-auto text-white" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="22" stroke="currentColor" strokeWidth="3" fill="none"/>
+                  <path d="M15 24 L21 30 L33 18" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </motion.div>
               <p className="text-2xl font-bold text-white mb-2">
                 You&apos;re on the beta waitlist!
               </p>
               <p className="text-white/90">
-                You&apos;ll get early access to test OpenWave and Wingman before anyone else.
+                You&apos;ll get early access to test our tools and help shape the future.
               </p>
             </motion.div>
           )}
@@ -197,7 +204,10 @@ export default function Newsletter() {
                   ease: "linear",
                 }}
               >
-                ✉️
+                <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="8" width="24" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M4 10 L16 18 L28 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </motion.div>
             ))}
           </div>

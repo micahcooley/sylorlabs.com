@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const { data, error } = await resendClient.emails.send({
       from: "Sylorlabs <noreply@sylorlabs.com>",
       to: email,
-      subject: "Welcome to Sylorlabs Beta Waitlist! 🎵",
+      subject: "Welcome to Sylorlabs Beta Waitlist!",
       html: `
         <!DOCTYPE html>
         <html>
@@ -129,11 +129,16 @@ export async function POST(request: Request) {
             <div class="container">
               <div class="header">
                 <div class="logo">Sylorlabs</div>
-                <div class="badge">🚧 Beta Waitlist</div>
+                <div class="badge">Beta Waitlist</div>
               </div>
 
               <div class="content">
-                <div class="checkmark">✓</div>
+                <div class="checkmark">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="22" stroke="#667eea" stroke-width="3" fill="none"/>
+                    <path d="M15 24 L21 30 L33 18" stroke="#667eea" stroke-width="3" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
                 <h1>You're on the Beta Waitlist!</h1>
 
                 <p>Thanks for joining us on this journey! You'll be among the first to test our tools as we build them.</p>
@@ -142,12 +147,12 @@ export async function POST(request: Request) {
                   <strong>What to expect:</strong>
                   <div class="products">
                     <div class="product">
-                      <span class="product-name">OpenWave</span> - Modern wavetable synthesizer<br>
-                      <small>Currently: UI concepts & DSP research</small>
+                      <span class="product-name">Zenith DAW</span> - Professional Digital Audio Workstation<br>
+                      <small>Currently: UI Development → Backend Integration → Beta → Release</small>
                     </div>
                     <div class="product">
-                      <span class="product-name">Wingman</span> - AI assistant for music production<br>
-                      <small>Currently: Early concept phase</small>
+                      <span class="product-name">Wingman AI</span> - Optional creative assistant<br>
+                      <small>Currently: Research & Development</small>
                     </div>
                   </div>
                 </div>

@@ -13,9 +13,9 @@ function getResend() {
 
 export async function POST(request: Request) {
   try {
-    const { name, email, role, message } = await request.json();
+    const { name, email, message, type } = await request.json();
 
-    if (!name || !email || !role || !message) {
+    if (!name || !email || !message) {
       return NextResponse.json(
         { error: "All fields are required" },
         { status: 400 }
@@ -27,148 +27,239 @@ export async function POST(request: Request) {
     if (!resendClient) {
       console.error("Resend API key not configured");
       return NextResponse.json(
-        { error: "Email service not configured. Please contact support." },
+        { error: "Email service not configured. Please add your RESEND_API_KEY to .env.local" },
         { status: 500 }
       );
     }
 
+    // Send notification to Sylorlabs
     const { data, error } = await resendClient.emails.send({
-      from: "Sylorlabs Collaborations <noreply@sylorlabs.com>",
+      from: "Sylorlabs <noreply@sylorlabs.com>",
       to: "Micah.cooley@sylorlabs.com",
       replyTo: email,
-      subject: `New Collaboration Request: ${role}`,
+      subject: "New Feature Request",
       html: `
         <!DOCTYPE html>
         <html>
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Feature Request Received</title>
             <style>
               body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #f4f4f4;
+                font-family: system-ui, -apple-system, sans-serif;
+                background-color: #0f172a;
+                color: #e2e8f0;
+                margin: 0;
+                padding: 40px 20px;
               }
               .container {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                max-width: 600px;
+                margin: 0 auto;
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
                 border-radius: 16px;
                 padding: 40px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+                border: 1px solid #334155;
               }
               .header {
                 text-align: center;
-                margin-bottom: 30px;
+                margin-bottom: 40px;
               }
               .logo {
-                font-size: 32px;
+                font-size: 28px;
                 font-weight: bold;
-                color: white;
+                background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
                 margin-bottom: 10px;
               }
               .badge {
                 display: inline-block;
-                background: rgba(255, 193, 7, 0.2);
-                border: 2px solid #ffc107;
-                color: #ffc107;
                 padding: 8px 16px;
+                background: rgba(99, 102, 241, 0.2);
+                border: 1px solid #6366f1;
                 border-radius: 20px;
                 font-size: 14px;
-                font-weight: bold;
+                color: #a5b4fc;
                 margin-bottom: 20px;
               }
               .content {
-                background: white;
-                padding: 30px;
+                background: rgba(15, 23, 42, 0.5);
                 border-radius: 12px;
-                margin-bottom: 20px;
-              }
-              h1 {
-                color: #667eea;
-                margin-top: 0;
-                font-size: 28px;
+                padding: 30px;
+                margin-bottom: 30px;
               }
               .field {
-                margin: 20px 0;
-                padding: 15px;
-                background: #f8f9fa;
-                border-radius: 8px;
-                border-left: 4px solid #667eea;
+                margin-bottom: 20px;
               }
-              .field-label {
-                font-weight: bold;
-                color: #667eea;
-                margin-bottom: 5px;
+              .label {
+                font-weight: 600;
+                color: #a5b4fc;
+                margin-bottom: 8px;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
               }
-              .field-value {
-                color: #555;
+              .value {
+                font-size: 16px;
+                line-height: 1.6;
+                color: #e2e8f0;
               }
-              .message-box {
-                background: #f8f9fa;
+              .message {
+                background: rgba(99, 102, 241, 0.1);
+                border-left: 4px solid #6366f1;
                 padding: 20px;
                 border-radius: 8px;
-                margin: 20px 0;
-                border-left: 4px solid #667eea;
-                white-space: pre-wrap;
+                margin-top: 20px;
               }
               .footer {
                 text-align: center;
-                color: rgba(255,255,255,0.8);
+                color: #64748b;
                 font-size: 14px;
-                margin-top: 20px;
               }
-              .action-button {
-                display: inline-block;
-                background: #667eea;
-                color: white;
-                padding: 12px 30px;
-                border-radius: 8px;
-                text-decoration: none;
-                font-weight: bold;
-                margin-top: 10px;
+              .checkmark {
+                width: 48px;
+                height: 48px;
+                margin: 0 auto 20px;
               }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="header">
-                <div class="logo">Sylorlabs</div>
-                <div class="badge">🤝 New Collaboration Request</div>
+                <div class="logo">SYLORLABS</div>
+                <div class="badge">New Feature Request</div>
+                <h1>New Feature Request!</h1>
               </div>
-
+              
               <div class="content">
-                <h1>Someone Wants to Join the Team!</h1>
-
                 <div class="field">
-                  <div class="field-label">Name:</div>
-                  <div class="field-value">${name}</div>
+                  <div class="label">From</div>
+                  <div class="value">${name} &lt;${email}&gt;</div>
                 </div>
-
+                
                 <div class="field">
-                  <div class="field-label">Email:</div>
-                  <div class="field-value">${email}</div>
+                  <div class="label">Message</div>
+                  <div class="message">${message.replace(/\n/g, "<br>")}</div>
                 </div>
+              </div>
+              
+              <div class="footer">
+                Feature request from sylorlabs.com
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
 
-                <div class="field">
-                  <div class="field-label">Role Interest:</div>
-                  <div class="field-value">${role}</div>
+    if (error) {
+      console.error("Resend API error:", error);
+      return NextResponse.json(
+        { error: "Failed to send notification" },
+        { status: 500 }
+      );
+    }
+
+    // Send automatic reply to the sender
+    const replyResult = await resendClient.emails.send({
+      from: "Sylorlabs <noreply@sylorlabs.com>",
+      to: email,
+      subject: "Thank you for sharing your ideas with Sylorlabs!",
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Thank You - Sylorlabs</title>
+            <style>
+              body {
+                font-family: system-ui, -apple-system, sans-serif;
+                background-color: #0f172a;
+                color: #e2e8f0;
+                margin: 0;
+                padding: 40px 20px;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                border-radius: 16px;
+                padding: 40px;
+                border: 1px solid #334155;
+              }
+              .header {
+                text-align: center;
+                margin-bottom: 40px;
+              }
+              .logo {
+                font-size: 28px;
+                font-weight: bold;
+                background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin-bottom: 10px;
+              }
+              .checkmark {
+                width: 64px;
+                height: 64px;
+                margin: 0 auto 20px;
+              }
+              .content {
+                text-align: center;
+              }
+              .title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #a5b4fc;
+              }
+              .message {
+                font-size: 16px;
+                line-height: 1.6;
+                color: #e2e8f0;
+                margin-bottom: 30px;
+              }
+              .footer {
+                text-align: center;
+                color: #64748b;
+                font-size: 14px;
+                margin-top: 40px;
+              }
+              .footer a {
+                color: #6366f1;
+                text-decoration: none;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <div class="logo">SYLORLABS</div>
+                <div class="checkmark">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="30" stroke="#6366f1" stroke-width="3" fill="none"/>
+                    <path d="M20 32 L28 40 L44 24" stroke="#6366f1" stroke-width="4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
-
-                <div class="field">
-                  <div class="field-label">Message:</div>
-                  <div class="message-box">${message}</div>
-                </div>
-
-                <p style="margin-top: 30px;">
-                  <a href="mailto:${email}" class="action-button">Reply to ${name}</a>
+              </div>
+              
+              <div class="content">
+                <h1 class="title">Thank You!</h1>
+                <p class="message">
+                  Thank you for sharing your ideas with Sylorlabs! We've received your message and will read every suggestion carefully.
+                  Your feedback helps us build Zenith DAW for producers like you.
+                </p>
+                <p class="message">
+                  We'll reach out if we need more details about your ideas. Stay tuned for beta access!
                 </p>
               </div>
-
+              
               <div class="footer">
-                Collaboration request from sylorlabs.com
+                <p>Building Zenith DAW • <a href="https://sylorlabs.com">sylorlabs.com</a></p>
               </div>
             </div>
           </body>
