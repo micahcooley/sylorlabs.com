@@ -29,7 +29,7 @@ export default function About() {
 
       <div className="container mx-auto px-6 relative z-10">
         <motion.h2
-          className="text-5xl font-bold text-center mb-12 text-gradient"
+          className="text-5xl font-bold text-center mb-16 text-gradient"
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -44,103 +44,72 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <motion.p
-            className="text-xl text-gray-300 text-center leading-relaxed mb-8"
+            className="text-xl text-gray-300 text-center leading-relaxed mb-12"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            We&apos;re in the early stages of building professional VST3 instruments and AI tools
-            for music producers. We have UI mockups and are deep in the research phase—exploring
-            JUCE for audio development, testing AI models for DAW integration, and planning
-            the architecture. This is a real journey, and we&apos;re inviting you to follow along.
+            Sylorlabs engineers professional audio tools that empower creators at every level. We combine cutting-edge 
+            technology with intuitive design to deliver studio-quality plugins, DAW software, and audio processing 
+            tools that rival industry standards. Our commitment is to make professional audio production accessible 
+            without compromising on quality or innovation.
           </motion.p>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-16">
+          <div className="grid md:grid-cols-2 gap-12 mt-20 max-w-4xl mx-auto">
             {[
               {
-                title: "Innovation",
-                description: "Cutting-edge technology meets creative design",
+                title: "Our Mission",
+                description: "Delivering professional audio tools that inspire creativity",
                 icon: (
                   <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
-                    {/* Rocket ship */}
-                    <path d="M32 4 L32 4 C26 4 20 8 16 14 C12 20 8 28 8 36 L16 44 L20 44 L24 48 L28 48 L32 52 L36 48 L40 48 L44 44 L48 44 L56 36 C56 28 52 20 48 14 C44 8 38 4 32 4 Z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="32" cy="28" r="6" fill="currentColor" fillOpacity="0.3" />
-                    <circle cx="32" cy="28" r="3" fill="currentColor" />
-                    {/* Fins */}
-                    <path d="M18 36 L8 42 L16 44 Z" fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-                    <path d="M46 36 L56 42 L48 44 Z" fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-                    {/* Flame */}
-                    <path d="M28 52 L32 60 L36 52" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-                    <path d="M30 52 L32 56 L34 52" fill="currentColor" fillOpacity="0.7" />
-                    {/* Stars */}
-                    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-                    <circle cx="52" cy="16" r="1.5" fill="currentColor" />
-                    <circle cx="8" cy="24" r="1" fill="currentColor" />
-                    <circle cx="56" cy="28" r="1" fill="currentColor" />
+                    {/* Mission/Target icon */}
+                    <circle cx="32" cy="32" r="24" stroke="currentColor" strokeWidth="3" fill="none" />
+                    <circle cx="32" cy="32" r="16" stroke="currentColor" strokeWidth="2" fill="none" />
+                    <circle cx="32" cy="32" r="8" stroke="currentColor" strokeWidth="2" fill="none" />
+                    <circle cx="32" cy="32" r="3" fill="currentColor" />
+                    {/* Arrow hitting center */}
+                    <path d="M8 8 L28 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M22 22 L28 28 L24 34" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ),
               },
               {
-                title: "Quality",
-                description: "Professional-grade tools for professionals",
+                title: "Audio Excellence",
+                description: "Studio-quality tools engineered by audio professionals",
                 icon: (
                   <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
-                    {/* Diamond/Gem shape */}
-                    <path d="M32 6 L48 20 L32 58 L16 20 Z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
-                    <path d="M16 20 L32 6 L48 20 L32 20 Z" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
-                    {/* Inner facets */}
-                    <line x1="32" y1="6" x2="32" y2="58" stroke="currentColor" strokeWidth="2" />
-                    <line x1="16" y1="20" x2="32" y2="58" stroke="currentColor" strokeWidth="2" />
-                    <line x1="48" y1="20" x2="32" y2="58" stroke="currentColor" strokeWidth="2" />
-                    <line x1="24" y1="13" x2="24" y2="35" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-                    <line x1="40" y1="13" x2="40" y2="35" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-                    <line x1="20" y1="20" x2="44" y2="20" stroke="currentColor" strokeWidth="2" />
-                    {/* Top facets */}
-                    <line x1="24" y1="13" x2="32" y2="20" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-                    <line x1="40" y1="13" x2="32" y2="20" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-                    {/* Shine effect */}
-                    <circle cx="28" cy="14" r="2" fill="currentColor" opacity="0.8" />
-                  </svg>
-                ),
-              },
-              {
-                title: "Community",
-                description: "Made for producers by producers",
-                icon: (
-                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
-                    {/* Three people holding hands in a circle */}
+                    {/* Three stick figures holding hands in a circle */}
                     {/* Person 1 - Top */}
-                    <circle cx="32" cy="14" r="5" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="2" />
-                    <path d="M32 20 L32 30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M24 24 L32 20 L40 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-
+                    <circle cx="32" cy="12" r="4" fill="currentColor" />
+                    <line x1="32" y1="16" x2="32" y2="26" stroke="currentColor" strokeWidth="2" />
+                    <line x1="32" y1="20" x2="26" y2="24" stroke="currentColor" strokeWidth="2" />
+                    <line x1="32" y1="20" x2="38" y2="24" stroke="currentColor" strokeWidth="2" />
+                    <line x1="32" y1="26" x2="28" y2="32" stroke="currentColor" strokeWidth="2" />
+                    <line x1="32" y1="26" x2="36" y2="32" stroke="currentColor" strokeWidth="2" />
+                    
                     {/* Person 2 - Bottom Left */}
-                    <circle cx="16" cy="44" r="5" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="2" />
-                    <path d="M16 50 L16 60" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M10 54 L16 50 L22 54" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-
+                    <circle cx="16" cy="44" r="4" fill="currentColor" />
+                    <line x1="16" y1="48" x2="16" y2="56" stroke="currentColor" strokeWidth="2" />
+                    <line x1="16" y1="52" x2="12" y2="56" stroke="currentColor" strokeWidth="2" />
+                    <line x1="16" y1="52" x2="20" y2="56" stroke="currentColor" strokeWidth="2" />
+                    <line x1="16" y1="48" x2="28" y2="32" stroke="currentColor" strokeWidth="2" />
+                    
                     {/* Person 3 - Bottom Right */}
-                    <circle cx="48" cy="44" r="5" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="2" />
-                    <path d="M48 50 L48 60" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M42 54 L48 50 L54 54" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-
-                    {/* Connecting circle */}
-                    <circle cx="32" cy="37" r="19" stroke="currentColor" strokeWidth="2.5" fill="none" opacity="0.4" strokeDasharray="4 4" />
-
-                    {/* Connection lines forming triangle */}
-                    <path d="M32 30 L16 44" stroke="currentColor" strokeWidth="2" opacity="0.6" />
-                    <path d="M32 30 L48 44" stroke="currentColor" strokeWidth="2" opacity="0.6" />
-                    <path d="M16 44 L48 44" stroke="currentColor" strokeWidth="2" opacity="0.6" />
-
-                    {/* Heart in center */}
-                    <path d="M32 38 L29 35 C27.5 33.5 27.5 31 29 29.5 C30.5 28 32 29 32 29 C32 29 33.5 28 35 29.5 C36.5 31 36.5 33.5 35 35 Z" fill="currentColor" />
+                    <circle cx="48" cy="44" r="4" fill="currentColor" />
+                    <line x1="48" y1="48" x2="48" y2="56" stroke="currentColor" strokeWidth="2" />
+                    <line x1="48" y1="52" x2="44" y2="56" stroke="currentColor" strokeWidth="2" />
+                    <line x1="48" y1="52" x2="52" y2="56" stroke="currentColor" strokeWidth="2" />
+                    <line x1="48" y1="48" x2="36" y2="32" stroke="currentColor" strokeWidth="2" />
+                    
+                    {/* Holding hands connection */}
+                    <line x1="28" y1="32" x2="36" y2="32" stroke="currentColor" strokeWidth="3" />
                   </svg>
                 ),
               },
             ].map((item, index) => (
               <motion.div
                 key={item.title}
-                className="glass p-6 rounded-2xl text-center"
+                className="glass p-8 rounded-2xl text-center"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}

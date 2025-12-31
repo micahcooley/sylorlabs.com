@@ -11,6 +11,9 @@
   --text-secondary: #cbd5e1;
   --accent-green: #10b981;
   --accent-orange: #f59e0b;
+  --neon-cyan: #00f3ff;
+  --neon-magenta: #ff00ff;
+  --noir-bg: #09090b;
 }
 
 * {
@@ -45,5 +48,29 @@ html {
     background: rgba(30, 41, 59, 0.7);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .neon-glass {
+    background: rgba(20, 20, 23, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+  }
+
+  .neon-glow-cyan {
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+  }
+
+  .neon-glow-magenta {
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  }
+
+  .neon-text-cyan {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  }
+
+  .neon-text-magenta {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export default function Hero() {
   const ref = useRef(null);
@@ -12,6 +12,39 @@ export default function Hero() {
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  
+  // Generate random values only on client side to prevent hydration mismatch
+  const [backgroundElements, setBackgroundElements] = useState<Array<{
+    size: number;
+    moveX: number;
+    moveY: number;
+    left: number;
+    top: number;
+  }>>([]);
+  
+  const [particles, setParticles] = useState<Array<{
+    left: number;
+    top: number;
+  }>>([]);
+
+  useEffect(() => {
+    // Generate consistent random values only on client
+    const newBackgroundElements = [...Array(20)].map(() => ({
+      size: Math.random() * 300 + 50,
+      moveX: Math.random() * 100 - 50,
+      moveY: Math.random() * 100 - 50,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+    }));
+    
+    const newParticles = [...Array(50)].map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+    }));
+    
+    setBackgroundElements(newBackgroundElements);
+    setParticles(newParticles);
+  }, []);
 
   return (
     <section
@@ -20,47 +53,42 @@ export default function Hero() {
     >
       {/* Animated background elements - GPU accelerated */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => {
-          const size = Math.random() * 300 + 50;
-          const moveX = Math.random() * 100 - 50;
-          const moveY = Math.random() * 100 - 50;
-          return (
-            <motion.div
-              key={i}
-              className="absolute rounded-full bg-primary opacity-10"
-              style={{
-                width: size,
-                height: size,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                willChange: "transform",
-              }}
-              animate={{
-                x: [0, moveX],
-                y: [0, moveY],
-                scale: [1, 1.2, 1],
-                opacity: [0.1, 0.2, 0.1],
-              }}
-              transition={{
-                duration: Math.random() * 10 + 10,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "linear",
-              }}
-            />
-          );
-        })}
+        {backgroundElements.map((element, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-primary opacity-10"
+            style={{
+              width: element.size,
+              height: element.size,
+              left: `${element.left}%`,
+              top: `${element.top}%`,
+              willChange: "transform",
+            }}
+            animate={{
+              x: [0, element.moveX],
+              y: [0, element.moveY],
+              scale: [1, 1.2, 1],
+              opacity: [0.1, 0.2, 0.1],
+            }}
+            transition={{
+              duration: Math.random() * 10 + 10,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "linear",
+            }}
+          />
+        ))}
       </div>
 
       {/* Floating particles - GPU accelerated */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(50)].map((_, i) => (
+        {particles.map((particle, i) => (
           <motion.div
             key={`particle-${i}`}
             className="absolute w-1 h-1 bg-primary rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${particle.left}%`,
+              top: `${particle.top}%`,
               willChange: "transform, opacity",
             }}
             animate={{
@@ -103,7 +131,7 @@ export default function Hero() {
               }}
               transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
             >
-              Building the Future
+              Professional Audio
             </motion.span>
             <br />
             <motion.span
@@ -112,7 +140,7 @@ export default function Hero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              of Music Production
+              Tools for Creators
             </motion.span>
           </motion.h2>
 
@@ -122,33 +150,10 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            Creating innovative VST3 instruments and AI-powered tools for producers.
-            Currently in early development.
+            Sylorlabs delivers professional-grade audio tools for modern creators. 
+            From studio-quality plugins to intuitive production software, we empower 
+            musicians, producers, and audio engineers with the tools they need to create exceptional sound.
           </motion.p>
-
-          <motion.div
-            className="inline-block px-6 py-2 bg-yellow-500/20 border-2 border-yellow-500 rounded-full mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-          >
-            <span className="text-yellow-400 font-semibold">🚧 In Development - Join Early</span>
-          </motion.div>
-
-          <motion.a
-            href="#products"
-            className="inline-block px-10 py-4 bg-gradient-primary text-white rounded-full font-semibold text-lg shadow-2xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 20px 40px rgba(99, 102, 241, 0.6)",
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            See What We&apos;re Building
-          </motion.a>
         </motion.div>
       </motion.div>
     </section>

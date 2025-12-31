@@ -1,27 +1,27 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const products = [
   {
     name: "Zenith DAW",
-    tagline: "The Ultimate Digital Audio Workstation",
+    tagline: "Professional DAW. Fair Price.",
     description:
-      "A revolutionary DAW combining the best aspects of every workstation with integrated Wingman AI assistant and OpenWave synthesizer. Featuring an intuitive, beautiful UI designed for maximum workflow efficiency.",
+      "Make music without compromise. Zenith delivers professional features that run smoothly on any laptop, works with your favorite plugins, and includes real-time collaboration like Google Docs for music production. Wingman AI is here when you need inspiration.",
     features: [
-      "Integrated Wingman AI assistant for intelligent music production",
-      "Built-in OpenWave wavetable synthesizer",
-      "Best features from industry-leading DAWs combined",
-      "Stunning, intuitive UI designed for producers",
-      "Advanced DSP engine with real-time processing",
-      "Smart MIDI generation and composition tools",
-      "Seamless workflow with zero menu diving",
-      "Cross-platform: Windows, macOS, Linux",
+      "$100 vs $200-900 for competing DAWs",
+      "Wingman AI your creative partner",
+      "Real-time collaboration with friends",
+      "Runs beautifully on any hardware",
+      "Windows, macOS, and Linux support",
+      "No forced subscriptions ever",
+      "Professional workflow simplified",
+      "Built by producers for producers",
     ],
-    badge: "FLAGSHIP",
-    badgeColor: "accent-green",
-    status: "Status: Early Development - The Future of Production",
+    badge: "COMING SOON",
+    badgeColor: "accent-orange",
+    status: "Status: UI Development → Backend Integration → Beta → Release",
     icon: (
       <svg
         width="80"
@@ -211,6 +211,20 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
 export default function Products() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  
+  // Generate random values only on client side to prevent hydration mismatch
+  const [backgroundElements, setBackgroundElements] = useState<Array<{
+    top: number;
+  }>>([]);
+
+  useEffect(() => {
+    // Generate consistent random values only on client
+    const newBackgroundElements = [...Array(5)].map(() => ({
+      top: Math.random() * 100,
+    }));
+    
+    setBackgroundElements(newBackgroundElements);
+  }, []);
 
   return (
     <section
@@ -220,7 +234,7 @@ export default function Products() {
     >
       {/* Animated background elements */}
       <div className="absolute inset-0">
-        {[...Array(5)].map((_, i) => (
+        {backgroundElements.map((element, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full bg-gradient-primary opacity-5"
@@ -228,7 +242,7 @@ export default function Products() {
               width: 400,
               height: 400,
               left: `${20 * i}%`,
-              top: `${Math.random() * 100}%`,
+              top: `${element.top}%`,
             }}
             animate={{
               y: [0, -50, 0],

@@ -164,7 +164,13 @@ export default function Collaborators() {
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <span className="text-accent-orange font-bold">✨ Open to all skill levels</span>
+            <span className="text-accent-orange font-bold flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 1 L9.5 5 L14 5 L10.5 8 L12 12 L8 9 L4 12 L5.5 8 L2 5 L6.5 5 Z" fill="currentColor"/>
+                <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1" fill="none"/>
+              </svg>
+              Open to all skill levels
+            </span>
           </motion.div>
         </motion.div>
 
@@ -225,7 +231,7 @@ export default function Collaborators() {
             }}
             whileTap={{ scale: 0.95 }}
           >
-            Join Now →
+            Contact Us →
           </motion.button>
           <p className="text-sm text-gray-500 mt-4">
             Or reach out on Discord, Twitter, or GitHub (links in footer)
@@ -241,23 +247,38 @@ export default function Collaborators() {
           <h4 className="text-lg font-bold mb-2 text-primary">What You Get:</h4>
           <ul className="space-y-2 text-gray-300">
             <li className="flex items-start gap-2">
-              <span className="text-accent-green mt-1">✓</span>
+              <svg className="w-4 h-4 text-accent-green mt-1 flex-shrink-0" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 4.5 L6 12 L2.5 8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1" fill="none"/>
+              </svg>
               <span>Early access to all tools before public release</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-accent-green mt-1">✓</span>
+              <svg className="w-4 h-4 text-accent-green mt-1 flex-shrink-0" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 4.5 L6 12 L2.5 8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1" fill="none"/>
+              </svg>
               <span>Full credit and attribution in the project</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-accent-green mt-1">✓</span>
+              <svg className="w-4 h-4 text-accent-green mt-1 flex-shrink-0" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 4.5 L6 12 L2.5 8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1" fill="none"/>
+              </svg>
               <span>Real-world experience building professional audio software</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-accent-green mt-1">✓</span>
+              <svg className="w-4 h-4 text-accent-green mt-1 flex-shrink-0" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 4.5 L6 12 L2.5 8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1" fill="none"/>
+              </svg>
               <span>Portfolio piece you can showcase to future employers/clients</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-accent-green mt-1">✓</span>
+              <svg className="w-4 h-4 text-accent-green mt-1 flex-shrink-0" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 4.5 L6 12 L2.5 8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1" fill="none"/>
+              </svg>
               <span>Collaborative learning environment with other passionate builders</span>
             </li>
           </ul>
@@ -288,7 +309,7 @@ export default function Collaborators() {
                 ×
               </button>
 
-              <h3 className="text-3xl font-bold mb-2 text-gradient">Join the Team</h3>
+              <h3 className="text-3xl font-bold mb-2 text-gradient">Get in Touch</h3>
               <p className="text-gray-400 mb-6">Tell us about yourself and how you want to contribute!</p>
 
               {submitStatus === "success" ? (
@@ -297,7 +318,12 @@ export default function Collaborators() {
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                 >
-                  <div className="text-6xl mb-4">✓</div>
+                  <div className="text-6xl mb-4">
+                    <svg className="w-16 h-16 mx-auto text-accent-green" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="3" fill="none"/>
+                      <path d="M20 32 L28 40 L44 24" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <p className="text-2xl font-bold text-accent-green">Message Sent!</p>
                   <p className="text-gray-400 mt-2">We&apos;ll get back to you soon.</p>
                 </motion.div>
