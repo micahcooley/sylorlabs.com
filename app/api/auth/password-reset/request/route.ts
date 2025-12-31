@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail } from '@/lib/auth';
-import crypto from 'crypto';
-import { resetTokens } from '@/lib/reset-tokens';
+import { createResetToken } from '@/lib/reset-tokens';
 import { getBaseUrl } from '@/lib/security';
 
 export async function POST(request: NextRequest) {
@@ -26,12 +25,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Generate reset token
-    const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // 1 hour from now
-    
-    // Store token (in production, store in database)
-    resetTokens.set(token, { email, expires });
+    // Generate JWT-based reset token
+    const token = createResetToken(email);
 
     // In development, log the reset link
     const resetUrl = `${getBaseUrl()}/login/password-reset/confirm?token=${token}`;

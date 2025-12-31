@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword, users, User } from '@/lib/auth';
-import { resetTokens } from '@/lib/reset-tokens';
+import { validateResetToken } from '@/lib/reset-tokens';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,26 +13,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate token
-    const resetData = resetTokens.get(token);
+    // Validate JWT token and get email
+    const email = validateResetToken(token);
     
-    if (!resetData) {
+    if (!email) {
       return NextResponse.json(
-        { error: 'Invalid reset token' },
-        { status: 400 }
-      );
-    }
-
-    if (new Date() > resetData.expires) {
-      resetTokens.delete(token);
-      return NextResponse.json(
-        { error: 'Reset token has expired' },
+        { error: 'Invalid or expired reset token' },
         { status: 400 }
       );
     }
 
     // Find user and update password
-    const user = users.find((u: User) => u.email === resetData.email);
+    const user = users.find((u: User) => u.email === email);
     
     if (!user) {
       return NextResponse.json(
@@ -46,9 +38,6 @@ export async function POST(request: NextRequest) {
     
     // Update user password
     user.password = hashedPassword;
-    
-    // Remove used token
-    resetTokens.delete(token);
 
     console.log(`Password reset successful for user: ${user.email}`);
 

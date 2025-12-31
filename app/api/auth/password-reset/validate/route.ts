@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { resetTokens } from '@/lib/reset-tokens';
+import { validateResetToken } from '@/lib/reset-tokens';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,30 +12,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if token exists and is not expired
-    const resetData = resetTokens.get(token);
+    // Validate the JWT token and get the email
+    const email = validateResetToken(token);
     
-    if (!resetData) {
+    if (!email) {
       return NextResponse.json(
-        { error: 'Invalid reset token' },
-        { status: 400 }
-      );
-    }
-
-    if (new Date() > resetData.expires) {
-      // Remove expired token
-      resetTokens.delete(token);
-      return NextResponse.json(
-        { error: 'Reset token has expired' },
+        { error: 'Invalid or expired token' },
         { status: 400 }
       );
     }
 
     return NextResponse.json({
-      success: true,
-      email: resetData.email
+      valid: true,
+      email,
     });
-
   } catch (error) {
     console.error('Token validation error:', error);
     return NextResponse.json(

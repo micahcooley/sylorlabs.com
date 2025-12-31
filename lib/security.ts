@@ -87,8 +87,16 @@ export function getBaseUrl(): string {
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
+  
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  
+  // In production, fail fast if the base URL is not configured
+  if (!baseUrl && process.env.NODE_ENV === 'production') {
+    throw new Error('NEXT_PUBLIC_BASE_URL environment variable is not set in production.');
+  }
+  
   // Fallback to environment variable or localhost for development
-  return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  return baseUrl || 'http://localhost:3000';
 }
 
 /**
