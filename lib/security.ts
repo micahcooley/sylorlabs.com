@@ -4,11 +4,16 @@
 
 // Allowed domains for redirects (add your production domains here)
 const ALLOWED_REDIRECT_DOMAINS = [
-  'localhost:3000',
   'sylorlabs.com',
   'www.sylorlabs.com',
+  'vercel.app', // Allow Vercel preview deployments
   // Add any other trusted domains here
 ];
+
+// Only allow localhost in development
+if (process.env.NODE_ENV !== 'production') {
+  ALLOWED_REDIRECT_DOMAINS.push('localhost:3000', 'localhost', '127.0.0.1');
+}
 
 // Trusted domains for profile picture proxy
 const TRUSTED_IMAGE_DOMAINS = [
