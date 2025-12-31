@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function PasswordResetConfirmPage() {
+function PasswordResetConfirmContent() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -176,7 +176,7 @@ export default function PasswordResetConfirmPage() {
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-white mb-2">Create New Password</h2>
             <p className="text-gray-400 text-sm">
-              Enter your new password below. Make sure it's at least 8 characters long.
+              Enter your new password below. Make sure it&apos;s at least 8 characters long.
             </p>
           </div>
 
@@ -254,5 +254,13 @@ export default function PasswordResetConfirmPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function PasswordResetConfirmPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-noir-bg flex items-center justify-center">Loading...</div>}>
+      <PasswordResetConfirmContent />
+    </Suspense>
   );
 }

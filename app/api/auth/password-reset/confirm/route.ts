@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hashPassword, findUserByEmail, users, User } from '@/lib/auth';
-import { resetTokens } from '../request/route';
+import { hashPassword, users, User } from '@/lib/auth';
+import { resetTokens } from '@/lib/reset-tokens';
 
 export async function POST(request: NextRequest) {
   try {

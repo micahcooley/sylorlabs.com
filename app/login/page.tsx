@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
@@ -123,12 +123,12 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8 animate-fade-in">
-          <a href="/" className="inline-block mb-4 group">
+          <Link href="/" className="inline-block mb-4 group">
             <h1 className="text-5xl font-bold font-outfit transition-transform group-hover:scale-105">
               <span className="neon-text-cyan">Sylor</span>
               <span className="neon-text-magenta">Labs</span>
             </h1>
-          </a>
+          </Link>
           <p className="text-gray-400 text-sm">Universal Authentication Portal</p>
         </div>
 
@@ -262,5 +262,13 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-noir-bg flex items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

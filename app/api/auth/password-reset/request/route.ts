@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail } from '@/lib/auth';
 import crypto from 'crypto';
-
-// In-memory store for reset tokens (in production, use a database)
-const resetTokens = new Map<string, { email: string; expires: Date }>();
+import { resetTokens } from '@/lib/reset-tokens';
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,4 +55,3 @@ export async function POST(request: NextRequest) {
 }
 
 // Export the reset tokens store for use in the confirm route
-export { resetTokens };

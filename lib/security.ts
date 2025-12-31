@@ -47,7 +47,7 @@ export function isValidRedirectUrl(url: string): boolean {
       }
       return hostname === allowedDomain;
     });
-  } catch (error) {
+  } catch {
     // Invalid URL format
     return false;
   }
@@ -72,7 +72,7 @@ export function isTrustedImageUrl(url: string): boolean {
     }
 
     return TRUSTED_IMAGE_DOMAINS.includes(parsedUrl.hostname);
-  } catch (error) {
+  } catch {
     // Invalid URL format
     return false;
   }

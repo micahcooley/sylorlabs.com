@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { resetTokens } from '../request/route';
+import { resetTokens } from '@/lib/reset-tokens';
 
 export async function POST(request: NextRequest) {
   try {
