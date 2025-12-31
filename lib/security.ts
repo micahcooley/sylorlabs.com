@@ -88,15 +88,21 @@ export function getBaseUrl(): string {
     return `https://${process.env.VERCEL_URL}`;
   }
   
+  // Check for explicit base URL (for custom deployments)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  
-  // In production, fail fast if the base URL is not configured
-  if (!baseUrl && process.env.NODE_ENV === 'production') {
-    throw new Error('NEXT_PUBLIC_BASE_URL environment variable is not set in production.');
+  if (baseUrl) {
+    return baseUrl;
   }
   
-  // Fallback to environment variable or localhost for development
-  return baseUrl || 'http://localhost:3000';
+  // In production without VERCEL_URL, try to construct from headers
+  if (process.env.NODE_ENV === 'production') {
+    // This is a fallback for production environments that don't set VERCEL_URL
+    // In most cases, this should be handled by the deployment platform
+    throw new Error('Base URL not configured for production. Set VERCEL_URL or NEXT_PUBLIC_BASE_URL.');
+  }
+  
+  // Development fallback
+  return 'http://localhost:3000';
 }
 
 /**
@@ -108,7 +114,18 @@ export function getGoogleRedirectUri(): string {
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}/api/auth/google/callback`;
   }
-  // Fallback to environment variable or localhost for development
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  return `${baseUrl}/api/auth/google/callback`;
+  
+  // Check for explicit base URL (for custom deployments)
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  if (baseUrl) {
+    return `${baseUrl}/api/auth/google/callback`;
+  }
+  
+  // In production without VERCEL_URL, fail fast
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('Google OAuth redirect URI not configured for production. Set VERCEL_URL or NEXT_PUBLIC_BASE_URL.');
+  }
+  
+  // Development fallback
+  return 'http://localhost:3000/api/auth/google/callback';
 }
