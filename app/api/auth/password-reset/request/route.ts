@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail } from '@/lib/auth';
+import { getBaseUrl } from '@/lib/url';
 import crypto from 'crypto';
 
 // In-memory store for reset tokens (in production, use a database)
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     resetTokens.set(token, { email, expires });
 
     // In development, log the reset link
-    const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/login/password-reset/confirm?token=${token}`;
+    const resetUrl = `${getBaseUrl()}/login/password-reset/confirm?token=${token}`;
     console.log('Password reset link:', resetUrl);
     console.log('This would be sent to email:', email);
 

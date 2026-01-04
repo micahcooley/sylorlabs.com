@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { getGoogleRedirectUri } from './url';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google/callback';
 
 export interface GoogleProfile {
   id: string;
@@ -119,7 +119,7 @@ export function getGoogleAuthUrl(redirectUri?: string, customState?: string): st
 
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: GOOGLE_REDIRECT_URI,
+    redirect_uri: getGoogleRedirectUri(),
     response_type: 'code',
     scope: 'openid email profile',
     state: stateValue,
@@ -138,7 +138,7 @@ export async function exchangeGoogleCode(code: string): Promise<GoogleProfile> {
       code,
       client_id: GOOGLE_CLIENT_ID,
       client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: GOOGLE_REDIRECT_URI,
+      redirect_uri: getGoogleRedirectUri(),
       grant_type: 'authorization_code',
     }),
   });
