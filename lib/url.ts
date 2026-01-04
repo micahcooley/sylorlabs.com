@@ -5,7 +5,21 @@
 export function getBaseUrl(): string {
   // If NEXT_PUBLIC_BASE_URL is explicitly set, use it
   if (process.env.NEXT_PUBLIC_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL.trim();
+    
+    // Basic validation to ensure it's a valid URL
+    try {
+      const url = new URL(baseUrl);
+      // Ensure it's http or https
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        console.warn(`Invalid protocol in NEXT_PUBLIC_BASE_URL: ${url.protocol}. Falling back to constructed URL.`);
+      } else {
+        // Remove trailing slash for consistency
+        return baseUrl.replace(/\/$/, '');
+      }
+    } catch (error) {
+      console.warn(`Invalid NEXT_PUBLIC_BASE_URL: ${baseUrl}. Falling back to constructed URL.`, error);
+    }
   }
 
   // For server-side, we need to construct the URL from environment or defaults
