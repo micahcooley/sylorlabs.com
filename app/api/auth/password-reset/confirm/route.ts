@@ -1,19 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hashPassword, users, User } from '@/lib/auth';
+import { hashPassword, users, User, findUserByEmail } from '@/lib/auth';
 import { validateResetToken } from '@/lib/reset-tokens';
+import { validatePassword } from '@/lib/validation';
+import { checkRateLimit, getClientIdentifier } from '@/lib/rateLimit';
+import { validateCsrfToken } from '@/lib/csrf';
 
 export async function POST(request: NextRequest) {
   try {
-    const { token, password } = await request.json();
+    const { token, password, confirmPassword, csrfToken } = await request.json();
 
-    if (!token || !password) {
+    if (!token || !password || !confirmPassword) {
       return NextResponse.json(
-        { error: 'Token and password are required' },
+        { error: 'Token, password, and confirm password are required' },
         { status: 400 }
       );
     }
 
-    // Validate JWT token and get email
+    if (!csrfToken || !validateCsrfToken(csrfToken)) {
+      return NextResponse.json(
+        { error: 'Invalid CSRF token' },
+        { status: 403 }
+      );
+    }
+
+    if (password !== confirmPassword) {
+      return NextResponse.json(
+        { error: 'Passwords do not match' },
+        { status: 400 }
+      );
+    }
+
+    const clientIp = getClientIdentifier(request);
+
+    const rateLimit = checkRateLimit(clientIp);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { 
+          error: 'Too many password reset attempts. Please try again later.',
+          resetTime: rateLimit.resetTime
+        },
+        { status: 429 }
+      );
+    }
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      return NextResponse.json(
+        { error: passwordValidation.message },
+        { status: 400 }
+      );
+    }
+
     const email = validateResetToken(token);
     
     if (!email) {
@@ -23,8 +60,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user and update password
-    const user = users.find((u: User) => u.email === email);
+    const user = await findUserByEmail(email);
     
     if (!user) {
       return NextResponse.json(
@@ -33,13 +69,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash new password
-    const hashedPassword = await hashPassword(password);
-    
-    // Update user password
-    user.password = hashedPassword;
+    if (!user.password) {
+      return NextResponse.json(
+        { error: 'This account uses Google OAuth. Please sign in with Google.' },
+        { status: 400 }
+      );
+    }
 
-    console.log(`Password reset successful for user: ${user.email}`);
+    user.password = await hashPassword(password);
 
     return NextResponse.json({
       success: true,

@@ -18,18 +18,11 @@ export interface User {
   googleId?: string;
   profilePicture?: string;
   createdAt: Date;
+  emailVerified?: boolean;
+  emailVerifiedAt?: Date;
 }
 
-export const users: User[] = [
-  // Test user for development
-  {
-    id: 'test-user-1',
-    username: 'testuser',
-    email: 'test@example.com',
-    password: '$2b$10$TUOe64NaQs2WJ5G4pICZvu1rm6URprq7KUIY1m0AzXFTNf0SSAJ5u', // "Test123456" hashed
-    createdAt: new Date(),
-  }
-];
+export const users: User[] = [];
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
@@ -40,7 +33,11 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function generateToken(userId: string, email: string): string {
-  const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+  const JWT_SECRET = process.env.JWT_SECRET;
+  
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not set. Please configure it before starting the server.');
+  }
   
   return jwt.sign(
     { userId, email },
@@ -51,7 +48,12 @@ export function generateToken(userId: string, email: string): string {
 
 export function verifyToken(token: string): { userId: string; email: string } | null {
   try {
-    const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+    const JWT_SECRET = process.env.JWT_SECRET;
+    
+    if (!JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is not set. Please configure it before starting the server.');
+    }
+    
     return jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
   } catch {
     return null;
