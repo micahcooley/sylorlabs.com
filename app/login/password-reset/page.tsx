@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function PasswordResetPage() {
+function PasswordResetContent() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -66,7 +66,7 @@ export default function PasswordResetPage() {
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-white mb-2">Forgot Password?</h2>
                 <p className="text-gray-400 text-sm">
-                  No worries! Enter your email address and we'll send you a link to reset your password.
+                  No worries! Enter your email address and we&apos;ll send you a link to reset your password.
                 </p>
               </div>
 
@@ -140,11 +140,11 @@ export default function PasswordResetPage() {
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Check Your Email</h3>
               <p className="text-gray-400 mb-6">
-                We've sent a password reset link to<br />
+                We&apos;ve sent a password reset link to<br />
                 <span className="text-primary font-medium">{email}</span>
               </p>
               <p className="text-gray-500 text-sm mb-6">
-                Didn't receive the email? Check your spam folder or try again.
+                Didn&apos;t receive the email? Check your spam folder or try again.
               </p>
               <motion.button
                 onClick={() => {
@@ -169,5 +169,13 @@ export default function PasswordResetPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function PasswordResetPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-noir-bg flex items-center justify-center">Loading...</div>}>
+      <PasswordResetContent />
+    </Suspense>
   );
 }

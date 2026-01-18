@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail } from '@/lib/auth';
-import { getBaseUrl } from '@/lib/url';
-import crypto from 'crypto';
+import { createResetToken } from '@/lib/reset-tokens';
+import { sendPasswordResetEmail } from '@/lib/email';
+import { checkRateLimit, getClientIdentifier } from '@/lib/rateLimit';
+import { validateCsrfToken } from '@/lib/csrf';
 
-// In-memory store for reset tokens (in production, use a database)
-const resetTokens = new Map<string, { email: string; expires: Date }>();
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
+    const { email, csrfToken } = await request.json();
 
     if (!email) {
       return NextResponse.json(
@@ -17,10 +17,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user by email
+    if (!csrfToken || !validateCsrfToken(csrfToken)) {
+      return NextResponse.json(
+        { error: 'Invalid CSRF token' },
+        { status: 403 }
+      );
+    }
+
+    const clientIp = getClientIdentifier(request);
+
+    const rateLimit = checkRateLimit(clientIp);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { 
+          error: 'Too many password reset attempts. Please try again later.',
+          resetTime: rateLimit.resetTime
+        },
+        { status: 429 }
+      );
+    }
+
     const user = await findUserByEmail(email);
     
-    // Always return success to prevent email enumeration attacks
     if (!user) {
       return NextResponse.json({
         success: true,
@@ -28,21 +46,24 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Generate reset token
-    const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // 1 hour from now
-    
-    // Store token (in production, store in database)
-    resetTokens.set(token, { email, expires });
+    if (!user.password) {
+      return NextResponse.json({
+        success: true,
+        message: 'If an account with this email exists, a reset link has been sent.'
+      });
+    }
 
-    // In development, log the reset link
-    const resetUrl = `${getBaseUrl()}/login/password-reset/confirm?token=${token}`;
-    console.log('Password reset link:', resetUrl);
-    console.log('This would be sent to email:', email);
+    const token = createResetToken(email);
 
-    // TODO: Send actual email using Resend or another email service
-    // For now, we'll just log it for development
-    
+    const emailSent = await sendPasswordResetEmail(email, token);
+
+    if (!emailSent) {
+      return NextResponse.json(
+        { error: 'Failed to send password reset email. Please try again.' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       message: 'If an account with this email exists, a reset link has been sent.'
@@ -56,6 +77,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-// Export the reset tokens store for use in the confirm route
-export { resetTokens };

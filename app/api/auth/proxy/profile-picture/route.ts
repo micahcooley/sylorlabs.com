@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isTrustedImageUrl, getBaseUrl } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -7,6 +8,14 @@ export async function GET(request: NextRequest) {
   if (!pictureUrl) {
     return NextResponse.json(
       { error: 'Picture URL is required' },
+      { status: 400 }
+    );
+  }
+
+  // Validate the URL to prevent SSRF attacks
+  if (!isTrustedImageUrl(pictureUrl)) {
+    return NextResponse.json(
+      { error: 'Invalid image URL' },
       { status: 400 }
     );
   }
@@ -37,7 +46,7 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': contentType,
         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': getBaseUrl(),
       },
     });
   } catch (error) {

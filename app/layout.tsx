@@ -6,6 +6,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 export const metadata: Metadata = {
   title: "Sylorlabs - Professional Audio Tools & Music Production Software",
   description: "Sylorlabs delivers professional-grade audio tools, VST3 plugins, DAW software, and sample packs for musicians, producers, and audio engineers. Create exceptional sound with our innovative audio production tools.",
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

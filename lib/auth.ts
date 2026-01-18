@@ -1,10 +1,11 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getGoogleRedirectUri } from './url';
+import { randomUUID } from 'crypto';
+import { getGoogleRedirectUri } from './security';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+
 
 export interface GoogleProfile {
   id: string;
@@ -21,18 +22,11 @@ export interface User {
   googleId?: string;
   profilePicture?: string;
   createdAt: Date;
+  emailVerified?: boolean;
+  emailVerifiedAt?: Date;
 }
 
-export const users: User[] = [
-  // Test user for development
-  {
-    id: 'test-user-1',
-    username: 'testuser',
-    email: 'test@example.com',
-    password: '$2b$10$TUOe64NaQs2WJ5G4pICZvu1rm6URprq7KUIY1m0AzXFTNf0SSAJ5u', // "Test123456" hashed
-    createdAt: new Date(),
-  }
-];
+export const users: User[] = [];
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
@@ -43,6 +37,12 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function generateToken(userId: string, email: string): string {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not set. Please configure it before starting the server.');
+  }
+  
   return jwt.sign(
     { userId, email },
     JWT_SECRET,
@@ -52,6 +52,12 @@ export function generateToken(userId: string, email: string): string {
 
 export function verifyToken(token: string): { userId: string; email: string } | null {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    
+    if (!JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is not set. Please configure it before starting the server.');
+    }
+    
     return jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
   } catch {
     return null;
@@ -75,7 +81,7 @@ export async function createUser(username: string | undefined, email: string, pa
 
   const hashedPassword = await hashPassword(password);
   const user: User = {
-    id: Math.random().toString(36).substring(7),
+    id: randomUUID(),
     username,
     email,
     password: hashedPassword,
@@ -106,6 +112,8 @@ export async function authenticateUser(emailOrUsername: string, password: string
 }
 
 export function getGoogleAuthUrl(redirectUri?: string, customState?: string): string {
+  const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+  
   if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === '') {
     throw new Error('Google OAuth is not configured. Please set GOOGLE_CLIENT_ID in your environment variables.');
   }
@@ -131,6 +139,9 @@ export function getGoogleAuthUrl(redirectUri?: string, customState?: string): st
 }
 
 export async function exchangeGoogleCode(code: string): Promise<GoogleProfile> {
+  const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+  const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+  
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -170,7 +181,7 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
     } else {
       // Create a new user with Google info (username is optional)
       user = {
-        id: Math.random().toString(36).substring(7),
+        id: randomUUID(),
         username: undefined, // Google users don't need usernames
         email: googleProfile.email,
         googleId: googleProfile.id,

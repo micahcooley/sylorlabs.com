@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { exchangeGoogleCode, findOrCreateGoogleUser, generateToken } from '@/lib/auth';
-import { getBaseUrl } from '@/lib/url';
+import { isValidRedirectUrl, getBaseUrl } from '@/lib/security';
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -42,6 +43,13 @@ export async function GET(request: NextRequest) {
 
     // Check if we should redirect directly to the desktop app (legacy support for some flows)
     if (state && !state.includes(':') && state !== 'login' && state !== 'signup' && state.startsWith('http')) {
+      // Validate the redirect URL to prevent open redirect attacks
+      if (!isValidRedirectUrl(state)) {
+        console.error('Invalid redirect URL detected:', state);
+        return NextResponse.redirect(
+          `${getBaseUrl()}/login?error=invalid_redirect`
+        );
+      }
       const separator = state.includes('?') ? '&' : '?';
       const redirectUrl = `${state}${separator}token=${token}`;
       return NextResponse.redirect(redirectUrl);
@@ -53,6 +61,12 @@ export async function GET(request: NextRequest) {
     
     // Only add redirect_uri if it's a desktop app flow
     if (redirectUri && redirectUri.startsWith('http')) {
+      // Validate the redirect URI to prevent open redirect attacks
+      if (!isValidRedirectUrl(redirectUri)) {
+        console.error('Invalid redirect URI detected:', redirectUri);
+        // Don't include the invalid redirect URI, just redirect to home
+        return NextResponse.redirect(finalRedirectUrl);
+      }
       finalRedirectUrl += `&redirect_uri=${encodeURIComponent(redirectUri)}`;
     }
 
