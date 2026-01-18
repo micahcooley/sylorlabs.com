@@ -117,15 +117,26 @@ Update the following variables:
 
 ```env
 # Required: Change this to a secure random string
+# Authentication secret key
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
-# Base URL for your application
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
+# Base URL Configuration (Optional)
+# Set this explicitly for production (e.g., https://sylorlabs.com)
+# If not set, the app will construct the URL from NEXT_PUBLIC_PROTOCOL, NEXT_PUBLIC_HOST, and NEXT_PUBLIC_PORT
+# For local development with default port 3000, you can leave this empty
+NEXT_PUBLIC_BASE_URL=
+
+# URL Construction Settings (Optional - used when NEXT_PUBLIC_BASE_URL is not set)
+NEXT_PUBLIC_PROTOCOL=http
+NEXT_PUBLIC_HOST=localhost
+NEXT_PUBLIC_PORT=3000
+# Alternatively, you can use the PORT environment variable
 
 # Google OAuth (Optional - only needed if using Google sign-in)
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
+# If not set, will be constructed from NEXT_PUBLIC_BASE_URL or the URL construction settings above
+GOOGLE_REDIRECT_URI=
 ```
 
 ### 3. Set Up Google OAuth (Optional)
@@ -134,8 +145,13 @@ GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 2. Create a new project or select existing
 3. Enable Google+ API
 4. Create OAuth 2.0 credentials
-5. Add authorized redirect URI: `http://localhost:3000/api/auth/google/callback`
+5. Add authorized redirect URI based on your configuration:
+   - For default local development: `http://localhost:3000/api/auth/google/callback`
+   - For custom port (e.g., 4000): `http://localhost:4000/api/auth/google/callback`
+   - For production: `https://yourdomain.com/api/auth/google/callback`
 6. Copy Client ID and Client Secret to `.env.local`
+
+**Note:** The redirect URI is automatically constructed from your URL configuration. You only need to set `GOOGLE_REDIRECT_URI` explicitly if you want to override the automatic construction.
 
 ### 4. Run Development Server
 
@@ -143,9 +159,15 @@ GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 npm run dev
 ```
 
-Visit:
-- Login: http://localhost:3000/login
-- Signup: http://localhost:3000/signup
+The application will start on the configured port (default: 3000).
+
+To use a different port, you can either:
+- Set `NEXT_PUBLIC_PORT=4000` in your `.env.local` file
+- Set the `PORT` environment variable: `PORT=4000 npm run dev`
+
+Visit the application based on your configuration:
+- Default: http://localhost:3000/login
+- Custom port: http://localhost:{YOUR_PORT}/login
 
 ## Desktop App Integration
 
@@ -153,9 +175,9 @@ The authentication portal supports seamless integration with the Zenith DAW desk
 
 ### Flow:
 
-1. **Desktop app opens webview** to:
+1. **Desktop app opens webview** to the login page with a redirect URI:
    ```
-   http://localhost:3000/login?redirect_uri=zenith://oauth/callback
+   http://localhost:{PORT}/login?redirect_uri=zenith://oauth/callback
    ```
 
 2. **User authenticates** via login/signup/Google OAuth

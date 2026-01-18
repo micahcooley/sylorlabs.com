@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { exchangeGoogleCode, findOrCreateGoogleUser, generateToken } from '@/lib/auth';
 import { isValidRedirectUrl, getBaseUrl } from '@/lib/security';
 
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;

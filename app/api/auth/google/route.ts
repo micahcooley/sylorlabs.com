@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGoogleAuthUrl } from '@/lib/auth';
 import { getBaseUrl } from '@/lib/security';
 
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
