@@ -9,8 +9,51 @@ interface FailedLoginAttempt {
   lockedUntil?: number;
 }
 
-const rateLimitStore = new Map<string, RateLimitEntry>();
-const failedLoginAttempts = new Map<string, FailedLoginAttempt>();
+class LRUMap<K, V> {
+  private limit: number;
+  private map: Map<K, V>;
+
+  constructor(limit: number) {
+    this.limit = limit;
+    this.map = new Map<K, V>();
+  }
+
+  get(key: K): V | undefined {
+    const entry = this.map.get(key);
+    if (entry) {
+      // Refresh key
+      this.map.delete(key);
+      this.map.set(key, entry);
+    }
+    return entry;
+  }
+
+  set(key: K, value: V): void {
+    if (this.map.has(key)) {
+      // Refresh key
+      this.map.delete(key);
+    } else if (this.map.size >= this.limit) {
+      // Evict oldest
+      const firstKey = this.map.keys().next().value;
+      if (firstKey !== undefined) {
+        this.map.delete(firstKey);
+      }
+    }
+    this.map.set(key, value);
+  }
+
+  delete(key: K): boolean {
+    return this.map.delete(key);
+  }
+
+  entries(): IterableIterator<[K, V]> {
+    return this.map.entries();
+  }
+}
+
+const MAX_STORE_SIZE = 10000;
+const rateLimitStore = new LRUMap<string, RateLimitEntry>(MAX_STORE_SIZE);
+const failedLoginAttempts = new LRUMap<string, FailedLoginAttempt>(MAX_STORE_SIZE);
 
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS = 5; // Max 5 requests per window
