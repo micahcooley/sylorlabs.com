@@ -26,7 +26,38 @@ export interface User {
   emailVerifiedAt?: Date;
 }
 
-export const users: User[] = [];
+// Internal Maps for O(1) lookups
+const usersById = new Map<string, User>();
+const usersByEmail = new Map<string, User>();
+const usersByUsername = new Map<string, User>();
+const usersByGoogleId = new Map<string, User>();
+
+/**
+ * Adds a user to internal maps.
+ * @internal
+ */
+function addUserToMaps(user: User) {
+  usersById.set(user.id, user);
+  usersByEmail.set(user.email, user);
+  if (user.username) {
+    usersByUsername.set(user.username, user);
+  }
+  if (user.googleId) {
+    usersByGoogleId.set(user.googleId, user);
+  }
+}
+
+/**
+ * Resets the internal user store.
+ * Useful for testing.
+ * @internal
+ */
+export function _resetUsers() {
+  usersById.clear();
+  usersByEmail.clear();
+  usersByUsername.clear();
+  usersByGoogleId.clear();
+}
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
@@ -65,16 +96,13 @@ export function verifyToken(token: string): { userId: string; email: string } | 
 }
 
 export async function createUser(username: string | undefined, email: string, password: string): Promise<User> {
-  const existingUserByEmail = users.find(u => u.email === email);
-  
-  if (existingUserByEmail) {
+  if (usersByEmail.has(email)) {
     throw new Error('Email is already registered');
   }
   
   // Only check username if one is provided
   if (username) {
-    const existingUserByUsername = users.find(u => u.username === username);
-    if (existingUserByUsername) {
+    if (usersByUsername.has(username)) {
       throw new Error('Username is already taken');
     }
   }
@@ -88,20 +116,24 @@ export async function createUser(username: string | undefined, email: string, pa
     createdAt: new Date(),
   };
 
-  users.push(user);
+  addUserToMaps(user);
   return user;
 }
 
 export async function findUserByEmail(email: string): Promise<User | undefined> {
-  return users.find(u => u.email === email);
+  return usersByEmail.get(email);
 }
 
 export async function findUserByUsername(username: string): Promise<User | undefined> {
-  return users.find(u => u.username === username);
+  return usersByUsername.get(username);
 }
 
 export async function authenticateUser(emailOrUsername: string, password: string): Promise<User | null> {
-  const user = users.find(u => u.email === emailOrUsername || u.username === emailOrUsername);
+  let user = usersByEmail.get(emailOrUsername);
+
+  if (!user) {
+    user = usersByUsername.get(emailOrUsername);
+  }
 
   if (!user || !user.password) {
     return null;
@@ -164,11 +196,15 @@ export async function exchangeGoogleCode(code: string): Promise<GoogleProfile> {
 }
 
 export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Promise<User> {
-  let user = users.find(u => u.googleId === googleProfile.id);
+  let user: User | undefined;
+
+  if (googleProfile.id) {
+    user = usersByGoogleId.get(googleProfile.id);
+  }
 
   if (!user) {
     // Check if there's an existing account with the same email
-    user = users.find(u => u.email === googleProfile.email);
+    user = usersByEmail.get(googleProfile.email);
 
     if (user) {
       // Link the Google account to the existing account
@@ -176,6 +212,10 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
       // Update profile picture if it exists and user doesn't have one
       if (googleProfile.picture && !user.profilePicture) {
         user.profilePicture = googleProfile.picture;
+      }
+      // Update googleId index
+      if (user.googleId) {
+        usersByGoogleId.set(user.googleId, user);
       }
       console.log(`Linked Google account to existing user: ${user.email}`);
     } else {
@@ -188,7 +228,7 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
         profilePicture: googleProfile.picture,
         createdAt: new Date(),
       };
-      users.push(user);
+      addUserToMaps(user);
       console.log(`Created new user via Google OAuth: ${user.email}`);
     }
   } else {
