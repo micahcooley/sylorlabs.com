@@ -13,7 +13,7 @@ function getResend() {
 
 export async function POST(request: Request) {
   try {
-    const { name, email, message, type } = await request.json();
+    const { name, email, message } = await request.json();
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     // Send notification and auto-reply concurrently
-    const [notificationResult] = await Promise.all([
+    const [notificationResult, replyResult] = await Promise.all([
       // Send notification to Sylorlabs
       resendClient.emails.send({
         from: "Sylorlabs <noreply@sylorlabs.com>",
@@ -269,8 +269,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Note: We ignore replyResult.error to match original behavior (it was ignored due to a bug),
-    // and also because the primary notification succeeded.
+    // Log reply email errors but don't fail the request since the primary notification succeeded
+    if (replyResult.error) {
+      console.warn("Auto-reply email failed (non-critical):", replyResult.error);
+    }
 
     return NextResponse.json(
       { message: "Message sent successfully!", data: notificationResult.data },
