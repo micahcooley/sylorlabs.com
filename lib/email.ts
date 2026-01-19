@@ -1,10 +1,18 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend: Resend | null = null;
+
+function getResend() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 export async function sendVerificationEmail(email: string, username?: string): Promise<boolean> {
   try {
-    if (!process.env.RESEND_API_KEY) {
+    const resendClient = getResend();
+    if (!resendClient) {
       console.error('RESEND_API_KEY is not configured');
       return false;
     }
@@ -13,7 +21,7 @@ export async function sendVerificationEmail(email: string, username?: string): P
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
 
-    const { error } = await resend.emails.send({
+    const { error } = await resendClient.emails.send({
       from: 'SylorLabs <noreply@sylorlabs.com>',
       to: email,
       subject: 'Verify your SylorLabs account',
@@ -83,7 +91,8 @@ export async function sendVerificationEmail(email: string, username?: string): P
 
 export async function sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
   try {
-    if (!process.env.RESEND_API_KEY) {
+    const resendClient = getResend();
+    if (!resendClient) {
       console.error('RESEND_API_KEY is not configured');
       return false;
     }
@@ -91,7 +100,7 @@ export async function sendPasswordResetEmail(email: string, resetToken: string):
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const resetUrl = `${baseUrl}/login/password-reset?token=${resetToken}`;
 
-    const { error } = await resend.emails.send({
+    const { error } = await resendClient.emails.send({
       from: 'SylorLabs <noreply@sylorlabs.com>',
       to: email,
       subject: 'Reset your SylorLabs password',

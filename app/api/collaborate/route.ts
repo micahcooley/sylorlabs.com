@@ -32,13 +32,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Send notification to Sylorlabs
-    const { data, error } = await resendClient.emails.send({
-      from: "Sylorlabs <noreply@sylorlabs.com>",
-      to: "Micah.cooley@sylorlabs.com",
-      replyTo: email,
-      subject: "New Feature Request",
-      html: `
+    // Send notification and auto-reply concurrently
+    const [notificationResult] = await Promise.all([
+      // Send notification to Sylorlabs
+      resendClient.emails.send({
+        from: "Sylorlabs <noreply@sylorlabs.com>",
+        to: "Micah.cooley@sylorlabs.com",
+        replyTo: email,
+        subject: "New Feature Request",
+        html: `
         <!DOCTYPE html>
         <html>
           <head>
@@ -152,22 +154,13 @@ export async function POST(request: Request) {
           </body>
         </html>
       `,
-    });
-
-    if (error) {
-      console.error("Resend API error:", error);
-      return NextResponse.json(
-        { error: "Failed to send notification" },
-        { status: 500 }
-      );
-    }
-
-    // Send automatic reply to the sender
-    const replyResult = await resendClient.emails.send({
-      from: "Sylorlabs <noreply@sylorlabs.com>",
-      to: email,
-      subject: "Thank you for sharing your ideas with Sylorlabs!",
-      html: `
+      }),
+      // Send automatic reply to the sender
+      resendClient.emails.send({
+        from: "Sylorlabs <noreply@sylorlabs.com>",
+        to: email,
+        subject: "Thank you for sharing your ideas with Sylorlabs!",
+        html: `
         <!DOCTYPE html>
         <html>
           <head>
@@ -265,18 +258,22 @@ export async function POST(request: Request) {
           </body>
         </html>
       `,
-    });
+      }),
+    ]);
 
-    if (error) {
-      console.error("Resend API error:", error);
+    if (notificationResult.error) {
+      console.error("Resend API error:", notificationResult.error);
       return NextResponse.json(
-        { error: "Failed to send email. Please try again." },
+        { error: "Failed to send notification" },
         { status: 500 }
       );
     }
 
+    // Note: We ignore replyResult.error to match original behavior (it was ignored due to a bug),
+    // and also because the primary notification succeeded.
+
     return NextResponse.json(
-      { message: "Message sent successfully!", data },
+      { message: "Message sent successfully!", data: notificationResult.data },
       { status: 200 }
     );
   } catch (error) {
