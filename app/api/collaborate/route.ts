@@ -13,7 +13,7 @@ function getResend() {
 
 export async function POST(request: Request) {
   try {
-    const { name, email, message, type } = await request.json();
+    const { name, email, message } = await request.json();
 
     if (!name || !email || !message) {
       return NextResponse.json(
