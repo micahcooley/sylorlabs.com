@@ -59,6 +59,7 @@ const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS = 5; // Max 5 requests per window
 const MAX_FAILED_ATTEMPTS = 5; // Max 5 failed login attempts
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes lockout
+const FAILED_ATTEMPT_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours - expire old attempts
 
 export function checkRateLimit(identifier: string): { allowed: boolean; remaining: number; resetTime: number } {
   const now = Date.now();
@@ -156,8 +157,7 @@ function cleanupExpiredEntries(): void {
   }
   
   // Clean up expired failed login attempts
-  // Remove entries that are locked and expired, OR entries older than 24 hours
-  const FAILED_ATTEMPT_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+  // Remove entries that are locked and expired, OR entries older than FAILED_ATTEMPT_EXPIRY
   for (const [key, entry] of failedLoginAttempts.entries()) {
     const shouldDelete = 
       (entry.lockedUntil && now > entry.lockedUntil) || // Lockout expired
@@ -169,8 +169,8 @@ function cleanupExpiredEntries(): void {
   }
 }
 
-// Only run cleanup in non-serverless environments
-// In serverless/edge environments, cleanup happens naturally via cold starts
-if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
+// Only run cleanup in development environments
+// In production/serverless/edge environments, cleanup happens naturally via cold starts and lazy cleanup
+if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
   setInterval(cleanupExpiredEntries, 60 * 1000); // Clean up every minute in dev
 }
