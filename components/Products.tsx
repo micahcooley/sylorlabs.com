@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, memo } from "react";
 
 const products = [
   {
@@ -72,7 +72,9 @@ const products = [
   },
 ];
 
-function ProductCard({ product, index }: { product: typeof products[0]; index: number }) {
+// Memoized to prevent re-renders when parent Products component updates background elements
+// Performance Impact: Reduces re-renders of 8 complex product cards on mount/updates
+const ProductCard = memo(function ProductCard({ product, index }: { product: typeof products[0]; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
@@ -206,7 +208,7 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
         ))}
     </motion.div>
   );
-}
+});
 
 export default function Products() {
   const ref = useRef(null);
