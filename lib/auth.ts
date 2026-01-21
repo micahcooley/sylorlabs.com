@@ -3,9 +3,6 @@ import jwt from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
 import { getGoogleRedirectUri } from './security';
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
-
 
 export interface GoogleProfile {
   id: string;
@@ -26,7 +23,28 @@ export interface User {
   emailVerifiedAt?: Date;
 }
 
-export const users: User[] = [];
+// In-memory user stores with O(1) lookups
+const usersByEmail = new Map<string, User>();
+const usersByUsername = new Map<string, User>();
+const usersByGoogleId = new Map<string, User>();
+
+// Helper for testing/benchmarking
+export function _resetUsers() {
+  usersByEmail.clear();
+  usersByUsername.clear();
+  usersByGoogleId.clear();
+}
+
+// Helper for testing/benchmarking to bypass bcrypt
+export function _debugAddUser(user: User) {
+  usersByEmail.set(user.email, user);
+  if (user.username) {
+    usersByUsername.set(user.username, user);
+  }
+  if (user.googleId) {
+    usersByGoogleId.set(user.googleId, user);
+  }
+}
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
@@ -65,7 +83,7 @@ export function verifyToken(token: string): { userId: string; email: string } | 
 }
 
 export async function createUser(username: string | undefined, email: string, password: string): Promise<User> {
-  const existingUserByEmail = users.find(u => u.email === email);
+  const existingUserByEmail = usersByEmail.get(email);
   
   if (existingUserByEmail) {
     throw new Error('Email is already registered');
@@ -73,7 +91,7 @@ export async function createUser(username: string | undefined, email: string, pa
   
   // Only check username if one is provided
   if (username) {
-    const existingUserByUsername = users.find(u => u.username === username);
+    const existingUserByUsername = usersByUsername.get(username);
     if (existingUserByUsername) {
       throw new Error('Username is already taken');
     }
@@ -88,20 +106,23 @@ export async function createUser(username: string | undefined, email: string, pa
     createdAt: new Date(),
   };
 
-  users.push(user);
+  usersByEmail.set(email, user);
+  if (username) {
+    usersByUsername.set(username, user);
+  }
   return user;
 }
 
 export async function findUserByEmail(email: string): Promise<User | undefined> {
-  return users.find(u => u.email === email);
+  return usersByEmail.get(email);
 }
 
 export async function findUserByUsername(username: string): Promise<User | undefined> {
-  return users.find(u => u.username === username);
+  return usersByUsername.get(username);
 }
 
 export async function authenticateUser(emailOrUsername: string, password: string): Promise<User | null> {
-  const user = users.find(u => u.email === emailOrUsername || u.username === emailOrUsername);
+  const user = usersByEmail.get(emailOrUsername) || usersByUsername.get(emailOrUsername);
 
   if (!user || !user.password) {
     return null;
@@ -164,15 +185,17 @@ export async function exchangeGoogleCode(code: string): Promise<GoogleProfile> {
 }
 
 export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Promise<User> {
-  let user = users.find(u => u.googleId === googleProfile.id);
+  let user = usersByGoogleId.get(googleProfile.id);
 
   if (!user) {
     // Check if there's an existing account with the same email
-    user = users.find(u => u.email === googleProfile.email);
+    user = usersByEmail.get(googleProfile.email);
 
     if (user) {
       // Link the Google account to the existing account
       user.googleId = googleProfile.id;
+      usersByGoogleId.set(googleProfile.id, user);
+
       // Update profile picture if it exists and user doesn't have one
       if (googleProfile.picture && !user.profilePicture) {
         user.profilePicture = googleProfile.picture;
@@ -188,7 +211,10 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
         profilePicture: googleProfile.picture,
         createdAt: new Date(),
       };
-      users.push(user);
+
+      usersByEmail.set(user.email, user);
+      usersByGoogleId.set(user.googleId, user);
+
       console.log(`Created new user via Google OAuth: ${user.email}`);
     }
   } else {
