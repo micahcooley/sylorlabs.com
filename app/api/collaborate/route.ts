@@ -13,7 +13,7 @@ function getResend() {
 
 export async function POST(request: Request) {
   try {
-    const { name, email, message, type } = await request.json();
+    const { name, email, message } = await request.json();
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -32,13 +32,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Send notification to Sylorlabs
-    const { data, error } = await resendClient.emails.send({
-      from: "Sylorlabs <noreply@sylorlabs.com>",
-      to: "Micah.cooley@sylorlabs.com",
-      replyTo: email,
-      subject: "New Feature Request",
-      html: `
+    // Send notification and auto-reply concurrently
+    const [notificationResult, replyResult] = await Promise.all([
+      // Send notification to Sylorlabs
+      resendClient.emails.send({
+        from: "Sylorlabs <noreply@sylorlabs.com>",
+        to: "Micah.cooley@sylorlabs.com",
+        replyTo: email,
+        subject: "New Feature Request",
+        html: `
         <!DOCTYPE html>
         <html>
           <head>
@@ -152,22 +154,13 @@ export async function POST(request: Request) {
           </body>
         </html>
       `,
-    });
-
-    if (error) {
-      console.error("Resend API error:", error);
-      return NextResponse.json(
-        { error: "Failed to send notification" },
-        { status: 500 }
-      );
-    }
-
-    // Send automatic reply to the sender
-    const replyResult = await resendClient.emails.send({
-      from: "Sylorlabs <noreply@sylorlabs.com>",
-      to: email,
-      subject: "Thank you for sharing your ideas with Sylorlabs!",
-      html: `
+      }),
+      // Send automatic reply to the sender
+      resendClient.emails.send({
+        from: "Sylorlabs <noreply@sylorlabs.com>",
+        to: email,
+        subject: "Thank you for sharing your ideas with Sylorlabs!",
+        html: `
         <!DOCTYPE html>
         <html>
           <head>
@@ -265,18 +258,24 @@ export async function POST(request: Request) {
           </body>
         </html>
       `,
-    });
+      }),
+    ]);
 
-    if (error) {
-      console.error("Resend API error:", error);
+    if (notificationResult.error) {
+      console.error("Resend API error:", notificationResult.error);
       return NextResponse.json(
-        { error: "Failed to send email. Please try again." },
+        { error: "Failed to send notification" },
         { status: 500 }
       );
     }
 
+    // Log reply email errors but don't fail the request since the primary notification succeeded
+    if (replyResult.error) {
+      console.warn("Auto-reply email failed (non-critical):", replyResult.error);
+    }
+
     return NextResponse.json(
-      { message: "Message sent successfully!", data },
+      { message: "Message sent successfully!", data: notificationResult.data },
       { status: 200 }
     );
   } catch (error) {
