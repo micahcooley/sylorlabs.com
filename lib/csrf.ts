@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 
-const csrfTokens = new Map<string, { expiresAt: number }>();
+export const csrfTokens = new Map<string, { expiresAt: number }>();
 
 const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour
 
@@ -38,11 +38,15 @@ export function getCsrfTokenFromRequest(request: Request): string | null {
   return url.searchParams.get('csrf_token');
 }
 
-setInterval(() => {
+export function cleanupTokens() {
   const now = Date.now();
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
+    } else {
+      break;
     }
   }
-}, 5 * 60 * 1000); // Clean up every 5 minutes
+}
+
+setInterval(cleanupTokens, 5 * 60 * 1000); // Clean up every 5 minutes
