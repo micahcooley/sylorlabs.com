@@ -1,48 +1,60 @@
 import { randomBytes } from 'crypto';
 
-const csrfTokens = new Map<string, { expiresAt: number }>();
+export const csrfTokens = new Map<string, { expiresAt: number }>();
 
 const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour
+const MAX_CSRF_TOKENS = 5000;
 
 export function generateCsrfToken(): string {
   const token = randomBytes(32).toString('hex');
   const expiresAt = Date.now() + CSRF_TOKEN_EXPIRY;
+
+  // Evict oldest if at limit
+  if (csrfTokens.size >= MAX_CSRF_TOKENS) {
+    const oldestKey = csrfTokens.keys().next().value;
+    if (oldestKey !== undefined) {
+      csrfTokens.delete(oldestKey);
+    }
+  }
+
   csrfTokens.set(token, { expiresAt });
   return token;
 }
 
 export function validateCsrfToken(token: string): boolean {
   const data = csrfTokens.get(token);
-  
+
   if (!data) {
     return false;
   }
-  
+
   if (Date.now() > data.expiresAt) {
     csrfTokens.delete(token);
     return false;
   }
-  
+
   csrfTokens.delete(token);
   return true;
 }
 
 export function getCsrfTokenFromRequest(request: Request): string | null {
   const contentType = request.headers.get('content-type');
-  
+
   if (contentType?.includes('application/json')) {
     return null;
   }
-  
+
   const url = new URL(request.url);
   return url.searchParams.get('csrf_token');
 }
 
-setInterval(() => {
+export function cleanupTokens() {
   const now = Date.now();
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
     }
   }
-}, 5 * 60 * 1000); // Clean up every 5 minutes
+}
+
+setInterval(cleanupTokens, 5 * 60 * 1000); // Clean up every 5 minutes
