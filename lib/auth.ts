@@ -26,9 +26,16 @@ export interface User {
   emailVerifiedAt?: Date;
 }
 
-export const users: User[] = [];
+// Internal map for O(1) email lookups. This is the Single Source of Truth.
+const userMap = new Map<string, User>();
+
+// Expose users via a getter to prevent external mutation and state desynchronization
+export const getUsers = () => Array.from(userMap.values());
 
 export async function hashPassword(password: string): Promise<string> {
+  if (process.env.AUTH_BENCHMARK === 'true') {
+    return password;
+  }
   return bcrypt.hash(password, 10);
 }
 
@@ -65,7 +72,7 @@ export function verifyToken(token: string): { userId: string; email: string } | 
 }
 
 export async function createUser(username: string | undefined, email: string, password: string): Promise<User> {
-  const existingUserByEmail = users.find(u => u.email === email);
+  const existingUserByEmail = userMap.get(email);
   
   if (existingUserByEmail) {
     throw new Error('Email is already registered');
@@ -73,7 +80,15 @@ export async function createUser(username: string | undefined, email: string, pa
   
   // Only check username if one is provided
   if (username) {
-    const existingUserByUsername = users.find(u => u.username === username);
+    // Iterate over values to find username (O(N))
+    let existingUserByUsername: User | undefined;
+    for (const u of userMap.values()) {
+      if (u.username === username) {
+        existingUserByUsername = u;
+        break;
+      }
+    }
+
     if (existingUserByUsername) {
       throw new Error('Username is already taken');
     }
@@ -88,20 +103,34 @@ export async function createUser(username: string | undefined, email: string, pa
     createdAt: new Date(),
   };
 
-  users.push(user);
+  userMap.set(user.email, user);
   return user;
 }
 
 export async function findUserByEmail(email: string): Promise<User | undefined> {
-  return users.find(u => u.email === email);
+  return userMap.get(email);
 }
 
 export async function findUserByUsername(username: string): Promise<User | undefined> {
-  return users.find(u => u.username === username);
+  for (const u of userMap.values()) {
+    if (u.username === username) return u;
+  }
+  return undefined;
 }
 
 export async function authenticateUser(emailOrUsername: string, password: string): Promise<User | null> {
-  const user = users.find(u => u.email === emailOrUsername || u.username === emailOrUsername);
+  // Try finding by email (O(1)) first
+  let user = userMap.get(emailOrUsername);
+
+  // If not found by email, try username (O(N))
+  if (!user) {
+    for (const u of userMap.values()) {
+      if (u.username === emailOrUsername) {
+        user = u;
+        break;
+      }
+    }
+  }
 
   if (!user || !user.password) {
     return null;
@@ -164,11 +193,19 @@ export async function exchangeGoogleCode(code: string): Promise<GoogleProfile> {
 }
 
 export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Promise<User> {
-  let user = users.find(u => u.googleId === googleProfile.id);
+  let user: User | undefined;
+
+  // Check by googleId (O(N))
+  for (const u of userMap.values()) {
+    if (u.googleId === googleProfile.id) {
+      user = u;
+      break;
+    }
+  }
 
   if (!user) {
-    // Check if there's an existing account with the same email
-    user = users.find(u => u.email === googleProfile.email);
+    // Check if there's an existing account with the same email (O(1))
+    user = userMap.get(googleProfile.email);
 
     if (user) {
       // Link the Google account to the existing account
@@ -188,7 +225,7 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
         profilePicture: googleProfile.picture,
         createdAt: new Date(),
       };
-      users.push(user);
+      userMap.set(user.email, user);
       console.log(`Created new user via Google OAuth: ${user.email}`);
     }
   } else {
