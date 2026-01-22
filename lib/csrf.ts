@@ -3,10 +3,19 @@ import { randomBytes } from 'crypto';
 const csrfTokens = new Map<string, { expiresAt: number }>();
 
 const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour
+const MAX_CSRF_TOKENS = 5000;
 
 export function generateCsrfToken(): string {
   const token = randomBytes(32).toString('hex');
   const expiresAt = Date.now() + CSRF_TOKEN_EXPIRY;
+
+  if (csrfTokens.size >= MAX_CSRF_TOKENS) {
+    const oldestKey = csrfTokens.keys().next().value;
+    if (oldestKey !== undefined) {
+      csrfTokens.delete(oldestKey);
+    }
+  }
+
   csrfTokens.set(token, { expiresAt });
   return token;
 }
