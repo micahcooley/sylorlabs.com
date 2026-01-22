@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hashPassword, users, User, findUserByEmail } from '@/lib/auth';
+import { hashPassword, findUserByEmail } from '@/lib/auth';
 import { validateResetToken } from '@/lib/reset-tokens';
 import { validatePassword } from '@/lib/validation';
 import { checkRateLimit, getClientIdentifier } from '@/lib/rateLimit';
