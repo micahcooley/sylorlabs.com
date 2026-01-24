@@ -5,9 +5,20 @@ export const csrfTokens = new Map<string, { expiresAt: number }>();
 const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour
 const MAX_CSRF_TOKENS = 5000;
 
+let lastCleanup = Date.now();
+const CLEANUP_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
 export function generateCsrfToken(): string {
+  const now = Date.now();
+
+  // Lazy cleanup
+  if (now - lastCleanup > CLEANUP_INTERVAL) {
+    cleanupTokens();
+    lastCleanup = now;
+  }
+
   const token = randomBytes(32).toString('hex');
-  const expiresAt = Date.now() + CSRF_TOKEN_EXPIRY;
+  const expiresAt = now + CSRF_TOKEN_EXPIRY;
 
   // Evict oldest if at limit
   if (csrfTokens.size >= MAX_CSRF_TOKENS) {
@@ -53,8 +64,10 @@ export function cleanupTokens() {
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
+    } else {
+      // Optimization: Since tokens are added in chronological order of expiry,
+      // once we find a non-expired token, all subsequent tokens are also valid.
+      break;
     }
   }
 }
-
-setInterval(cleanupTokens, 5 * 60 * 1000); // Clean up every 5 minutes
