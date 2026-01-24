@@ -72,6 +72,9 @@ const products = [
   },
 ];
 
+// Constant for particle effect to prevent redundant array creation on every render
+const PARTICLES = [...Array(10)];
+
 // Memoized to prevent re-renders when parent Products component updates background elements
 // Performance Impact: Reduces re-renders of 8 complex product cards on mount/updates
 const ProductCard = memo(function ProductCard({ product, index }: { product: typeof products[0]; index: number }) {
@@ -185,11 +188,12 @@ const ProductCard = memo(function ProductCard({ product, index }: { product: typ
 
       {/* Floating particles effect */}
       {isHovered &&
-        [...Array(10)].map((_, i) => (
+        PARTICLES.map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-primary rounded-full"
             style={{
+              // Random positions are regenerated on re-render; could be stabilized with memoization if desired.
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
             }}
