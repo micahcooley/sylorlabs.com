@@ -9,13 +9,15 @@ interface FailedLoginAttempt {
   lockedUntil?: number;
 }
 
-class LRUMap<K, V> {
+export class LRUMap<K, V> {
   private limit: number;
   private map: Map<K, V>;
+  private onEvict?: (key: K, value: V) => void;
 
-  constructor(limit: number) {
+  constructor(limit: number, onEvict?: (key: K, value: V) => void) {
     this.limit = limit;
     this.map = new Map<K, V>();
+    this.onEvict = onEvict;
   }
 
   get(key: K): V | undefined {
@@ -36,7 +38,11 @@ class LRUMap<K, V> {
       // Evict oldest
       const firstKey = this.map.keys().next().value;
       if (firstKey !== undefined) {
+        const evictedValue = this.map.get(firstKey);
         this.map.delete(firstKey);
+        if (this.onEvict && evictedValue) {
+          this.onEvict(firstKey, evictedValue);
+        }
       }
     }
     this.map.set(key, value);
@@ -52,8 +58,14 @@ class LRUMap<K, V> {
 }
 
 const MAX_STORE_SIZE = 10000;
-const rateLimitStore = new LRUMap<string, RateLimitEntry>(MAX_STORE_SIZE);
-const failedLoginAttempts = new LRUMap<string, FailedLoginAttempt>(MAX_STORE_SIZE);
+// Secondary map to track expiration order for rateLimitStore
+// Map key -> resetTime. Insertion order is maintained for creation/reset.
+export const rateLimitExpiry = new Map<string, number>();
+
+export const rateLimitStore = new LRUMap<string, RateLimitEntry>(MAX_STORE_SIZE, (key) => {
+  rateLimitExpiry.delete(key);
+});
+export const failedLoginAttempts = new LRUMap<string, FailedLoginAttempt>(MAX_STORE_SIZE);
 
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS = 5; // Max 5 requests per window
@@ -70,12 +82,20 @@ export function checkRateLimit(identifier: string): { allowed: boolean; remainin
     // Clean up the expired entry if it exists
     if (entry) {
       rateLimitStore.delete(identifier);
+      rateLimitExpiry.delete(identifier);
     }
     
     const newEntry: RateLimitEntry = {
       count: 1,
       resetTime: now + RATE_LIMIT_WINDOW,
     };
+
+    // Set in expiry map first (or after, doesn't matter as long as we maintain order)
+    // We want the NEWEST expiry at the end.
+    // Since we are creating a new entry with expiry = now + WINDOW, it is strictly greater/equal to any previous expiry.
+    rateLimitExpiry.delete(identifier); // Ensure it moves to end
+    rateLimitExpiry.set(identifier, newEntry.resetTime);
+
     rateLimitStore.set(identifier, newEntry);
     return { allowed: true, remaining: MAX_REQUESTS - 1, resetTime: newEntry.resetTime };
   }
@@ -85,6 +105,7 @@ export function checkRateLimit(identifier: string): { allowed: boolean; remainin
   }
 
   entry.count++;
+  // Update store (LRU refresh) but NOT expiry map (expiry time unchanged)
   rateLimitStore.set(identifier, entry);
   return { allowed: true, remaining: MAX_REQUESTS - entry.count, resetTime: entry.resetTime };
 }
@@ -137,6 +158,7 @@ export function resetFailedLoginAttempts(identifier: string): void {
 
 export function clearRateLimit(identifier: string): void {
   rateLimitStore.delete(identifier);
+  rateLimitExpiry.delete(identifier);
 }
 
 export function getClientIdentifier(request: Request): string {
@@ -146,18 +168,27 @@ export function getClientIdentifier(request: Request): string {
 }
 
 // Cleanup function that can be called periodically
-function cleanupExpiredEntries(): void {
+export function cleanupExpiredEntries(): void {
   const now = Date.now();
   
-  // Clean up expired rate limit entries
-  for (const [key, entry] of rateLimitStore.entries()) {
-    if (now > entry.resetTime) {
+  // Optimized cleanup for rateLimitStore using the expiry map
+  // Since rateLimitExpiry is ordered by resetTime (insertion order),
+  // we can iterate and stop as soon as we find a non-expired entry.
+  for (const [key, resetTime] of rateLimitExpiry) {
+    if (now > resetTime) {
       rateLimitStore.delete(key);
+      rateLimitExpiry.delete(key);
+    } else {
+      // Optimization: Found an entry that expires in the future.
+      // Since the map is sorted by expiry time, all subsequent entries are also valid.
+      break;
     }
   }
   
   // Clean up expired failed login attempts
   // Remove entries that are locked and expired, OR entries older than FAILED_ATTEMPT_EXPIRY
+  // Note: We keep the full iteration here as optimization is more complex due to mixed expiry types
+  // and lower expected volume.
   for (const [key, entry] of failedLoginAttempts.entries()) {
     const shouldDelete = 
       (entry.lockedUntil && now > entry.lockedUntil) || // Lockout expired
