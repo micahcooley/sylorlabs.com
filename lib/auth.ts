@@ -35,9 +35,9 @@ const usersByGoogleId = new Map<string, User>();
  */
 function addUserToMaps(user: User) {
   usersById.set(user.id, user);
-  usersByEmail.set(user.email, user);
+  usersByEmail.set(user.email.toLowerCase(), user);
   if (user.username) {
-    usersByUsername.set(user.username, user);
+    usersByUsername.set(user.username.toLowerCase(), user);
   }
   if (user.googleId) {
     usersByGoogleId.set(user.googleId, user);
@@ -54,6 +54,15 @@ export function _resetUsers() {
   usersByEmail.clear();
   usersByUsername.clear();
   usersByGoogleId.clear();
+}
+
+/**
+ * Inserts a user directly into the maps.
+ * Useful for benchmarking and testing to bypass hashing.
+ * @internal
+ */
+export function _insertUserForTest(user: User) {
+  addUserToMaps(user);
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -93,13 +102,16 @@ export function verifyToken(token: string): { userId: string; email: string } | 
 }
 
 export async function createUser(username: string | undefined, email: string, password: string): Promise<User> {
-  if (usersByEmail.has(email)) {
+  const normalizedEmail = email.toLowerCase();
+  const normalizedUsername = username?.toLowerCase();
+
+  if (usersByEmail.has(normalizedEmail)) {
     throw new Error('Email is already registered');
   }
   
   // Only check username if one is provided
-  if (username) {
-    if (usersByUsername.has(username)) {
+  if (normalizedUsername) {
+    if (usersByUsername.has(normalizedUsername)) {
       throw new Error('Username is already taken');
     }
   }
@@ -107,8 +119,8 @@ export async function createUser(username: string | undefined, email: string, pa
   const hashedPassword = await hashPassword(password);
   const user: User = {
     id: randomUUID(),
-    username,
-    email,
+    username: normalizedUsername,
+    email: normalizedEmail,
     password: hashedPassword,
     createdAt: new Date(),
   };
@@ -118,18 +130,19 @@ export async function createUser(username: string | undefined, email: string, pa
 }
 
 export async function findUserByEmail(email: string): Promise<User | undefined> {
-  return usersByEmail.get(email);
+  return usersByEmail.get(email.toLowerCase());
 }
 
 export async function findUserByUsername(username: string): Promise<User | undefined> {
-  return usersByUsername.get(username);
+  return usersByUsername.get(username.toLowerCase());
 }
 
 export async function authenticateUser(emailOrUsername: string, password: string): Promise<User | null> {
-  let user = usersByEmail.get(emailOrUsername);
+  const normalizedInput = emailOrUsername.toLowerCase();
+  let user = usersByEmail.get(normalizedInput);
 
   if (!user) {
-    user = usersByUsername.get(emailOrUsername);
+    user = usersByUsername.get(normalizedInput);
   }
 
   if (!user || !user.password) {
@@ -201,7 +214,8 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
 
   if (!user) {
     // Check if there's an existing account with the same email
-    user = usersByEmail.get(googleProfile.email);
+    const normalizedEmail = googleProfile.email.toLowerCase();
+    user = usersByEmail.get(normalizedEmail);
 
     if (user) {
       // Link the Google account to the existing account
@@ -220,7 +234,7 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
       user = {
         id: randomUUID(),
         username: undefined, // Google users don't need usernames
-        email: googleProfile.email,
+        email: normalizedEmail,
         googleId: googleProfile.id,
         profilePicture: googleProfile.picture,
         createdAt: new Date(),
