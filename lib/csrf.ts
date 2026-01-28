@@ -53,6 +53,10 @@ export function cleanupTokens() {
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
+    } else {
+      // Since map insertion order corresponds to expiry time (monotonic),
+      // once we hit a valid token, we can stop checking.
+      break;
     }
   }
 }
