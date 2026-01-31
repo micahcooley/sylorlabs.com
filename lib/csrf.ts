@@ -53,6 +53,10 @@ export function cleanupTokens() {
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
+    } else {
+      // Optimization: tokens are inserted in expiration order.
+      // If we find a non-expired token, all subsequent tokens are also valid.
+      break;
     }
   }
 }
