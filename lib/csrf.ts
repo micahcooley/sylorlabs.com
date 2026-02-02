@@ -53,6 +53,11 @@ export function cleanupTokens() {
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
+    } else {
+      // Optimization: Tokens are inserted with a constant TTL (CSRF_TOKEN_EXPIRY).
+      // Since Map iteration follows insertion order, and insertion order corresponds to
+      // expiry time, once we find a valid token, all subsequent tokens are also valid.
+      break;
     }
   }
 }
