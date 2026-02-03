@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect, memo } from "react";
+import { useRef, useState, useEffect, memo, useMemo } from "react";
+
+const PARTICLE_COUNT = 10;
 
 const products = [
   {
@@ -78,6 +80,15 @@ const ProductCard = memo(function ProductCard({ product, index }: { product: typ
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+
+  // Generate particles once per card instance to avoid regeneration on hover/re-renders
+  const particles = useMemo(() => {
+    return Array.from({ length: PARTICLE_COUNT }).map((_, i) => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: i * 0.1,
+    }));
+  }, []);
 
   return (
     <motion.div
@@ -185,13 +196,13 @@ const ProductCard = memo(function ProductCard({ product, index }: { product: typ
 
       {/* Floating particles effect */}
       {isHovered &&
-        [...Array(10)].map((_, i) => (
+        particles.map((p, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-primary rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${p.left}%`,
+              top: `${p.top}%`,
             }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{
@@ -202,7 +213,7 @@ const ProductCard = memo(function ProductCard({ product, index }: { product: typ
             transition={{
               duration: 1.5,
               repeat: Infinity,
-              delay: i * 0.1,
+              delay: p.delay,
             }}
           />
         ))}
