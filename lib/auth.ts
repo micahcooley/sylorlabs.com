@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
 import { getGoogleRedirectUri } from './security';
+import { securityLogger, SecurityEventType } from './logger';
 
 
 export interface GoogleProfile {
@@ -214,7 +215,12 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
       if (user.googleId) {
         usersByGoogleId.set(user.googleId, user);
       }
-      console.log(`Linked Google account to existing user: ${user.email}`);
+      securityLogger.log({
+        type: SecurityEventType.GOOGLE_OAUTH_SUCCESS,
+        timestamp: Date.now(),
+        userId: user.id,
+        details: { action: 'linked' },
+      });
     } else {
       // Create a new user with Google info (username is optional)
       user = {
@@ -226,7 +232,12 @@ export async function findOrCreateGoogleUser(googleProfile: GoogleProfile): Prom
         createdAt: new Date(),
       };
       addUserToMaps(user);
-      console.log(`Created new user via Google OAuth: ${user.email}`);
+      securityLogger.log({
+        type: SecurityEventType.GOOGLE_OAUTH_SUCCESS,
+        timestamp: Date.now(),
+        userId: user.id,
+        details: { action: 'created' },
+      });
     }
   } else {
     // Update existing Google user's profile picture if it changed
