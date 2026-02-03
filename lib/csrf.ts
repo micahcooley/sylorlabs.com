@@ -9,6 +9,18 @@ export function generateCsrfToken(): string {
   const token = randomBytes(32).toString('hex');
   const expiresAt = Date.now() + CSRF_TOKEN_EXPIRY;
 
+  // Lazy cleanup: Remove expired tokens from the start of the Map (oldest first)
+  const now = Date.now();
+  for (const [key, data] of csrfTokens.entries()) {
+    if (now > data.expiresAt) {
+      csrfTokens.delete(key);
+    } else {
+      // Since Map preserves insertion order, if we find a valid token,
+      // subsequent tokens are likely valid too.
+      break;
+    }
+  }
+
   // Evict oldest if at limit
   if (csrfTokens.size >= MAX_CSRF_TOKENS) {
     const oldestKey = csrfTokens.keys().next().value;
@@ -47,14 +59,3 @@ export function getCsrfTokenFromRequest(request: Request): string | null {
   const url = new URL(request.url);
   return url.searchParams.get('csrf_token');
 }
-
-export function cleanupTokens() {
-  const now = Date.now();
-  for (const [token, data] of csrfTokens.entries()) {
-    if (now > data.expiresAt) {
-      csrfTokens.delete(token);
-    }
-  }
-}
-
-setInterval(cleanupTokens, 5 * 60 * 1000); // Clean up every 5 minutes
