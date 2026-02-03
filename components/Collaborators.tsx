@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 
 export default function Collaborators() {
   const ref = useRef(null);
@@ -16,7 +16,7 @@ export default function Collaborators() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const roles = [
+  const roles = useMemo(() => [
     {
       title: "C++ / DSP Developers",
       description: "Help build the audio engine with JUCE framework",
@@ -80,7 +80,7 @@ export default function Collaborators() {
         </svg>
       ),
     },
-  ];
+  ], []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
