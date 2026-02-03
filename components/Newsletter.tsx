@@ -3,6 +3,9 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
+const WAVE_INDICES = [0, 1, 2] as const;
+const EMAIL_ICON_INDICES = [0, 1, 2, 3, 4, 5] as const;
+
 export default function Newsletter() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
@@ -51,7 +54,7 @@ export default function Newsletter() {
     >
       {/* Animated waves - GPU accelerated */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(3)].map((_, i) => (
+        {WAVE_INDICES.map((i) => (
           <motion.div
             key={i}
             className="absolute inset-0 opacity-20"
@@ -183,7 +186,7 @@ export default function Newsletter() {
 
           {/* Floating email icons - GPU accelerated */}
           <div className="mt-12 pointer-events-none">
-            {[...Array(6)].map((_, i) => (
+            {EMAIL_ICON_INDICES.map((i) => (
               <motion.div
                 key={i}
                 className="absolute text-4xl"
