@@ -145,32 +145,3 @@ export function getClientIdentifier(request: Request): string {
   return ip;
 }
 
-// Cleanup function that can be called periodically
-function cleanupExpiredEntries(): void {
-  const now = Date.now();
-  
-  // Clean up expired rate limit entries
-  for (const [key, entry] of rateLimitStore.entries()) {
-    if (now > entry.resetTime) {
-      rateLimitStore.delete(key);
-    }
-  }
-  
-  // Clean up expired failed login attempts
-  // Remove entries that are locked and expired, OR entries older than FAILED_ATTEMPT_EXPIRY
-  for (const [key, entry] of failedLoginAttempts.entries()) {
-    const shouldDelete = 
-      (entry.lockedUntil && now > entry.lockedUntil) || // Lockout expired
-      (now - entry.lastAttempt > FAILED_ATTEMPT_EXPIRY); // Old attempt
-    
-    if (shouldDelete) {
-      failedLoginAttempts.delete(key);
-    }
-  }
-}
-
-// Only run cleanup in development environments
-// In production/serverless/edge environments, cleanup happens naturally via cold starts and lazy cleanup
-if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
-  setInterval(cleanupExpiredEntries, 60 * 1000); // Clean up every minute in dev
-}
