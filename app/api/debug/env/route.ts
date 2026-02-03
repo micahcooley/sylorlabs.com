@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { getBaseUrl, getGoogleRedirectUri } from '@/lib/security';
 
 export async function GET() {
+  if (process.env.NODE_ENV === 'production') {
+    return new NextResponse('Not Found', { status: 404 });
+  }
+
   const envVars = {
     // Environment variables (show first few chars for safety)
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? 

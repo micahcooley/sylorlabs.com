@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGoogleAuthUrl } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return new NextResponse('Not Found', { status: 404 });
+  }
+
   try {
     console.log('=== Google OAuth Debug Test ===');
     console.log('NODE_ENV:', process.env.NODE_ENV);
