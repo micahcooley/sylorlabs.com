@@ -9,7 +9,11 @@ export function generateCsrfToken(): string {
   const token = randomBytes(32).toString('hex');
   const expiresAt = Date.now() + CSRF_TOKEN_EXPIRY;
 
-  // Evict oldest if at limit
+  // Lazy cleanup of expired tokens (replaces background interval)
+  // This is efficient because it stops at the first valid token
+  cleanupTokens();
+
+  // Evict oldest if still at limit after cleanup
   if (csrfTokens.size >= MAX_CSRF_TOKENS) {
     const oldestKey = csrfTokens.keys().next().value;
     if (oldestKey !== undefined) {
@@ -53,8 +57,10 @@ export function cleanupTokens() {
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
+    } else {
+      // Optimization: Tokens are insertion-ordered.
+      // If we find a non-expired token, all subsequent ones are likely valid too.
+      break;
     }
   }
 }
-
-setInterval(cleanupTokens, 5 * 60 * 1000); // Clean up every 5 minutes
