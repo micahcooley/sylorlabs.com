@@ -6,6 +6,8 @@ const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour
 const MAX_CSRF_TOKENS = 5000;
 
 export function generateCsrfToken(): string {
+  cleanupTokens();
+
   const token = randomBytes(32).toString('hex');
   const expiresAt = Date.now() + CSRF_TOKEN_EXPIRY;
 
@@ -53,8 +55,8 @@ export function cleanupTokens() {
   for (const [token, data] of csrfTokens.entries()) {
     if (now > data.expiresAt) {
       csrfTokens.delete(token);
+    } else {
+      break;
     }
   }
 }
-
-setInterval(cleanupTokens, 5 * 60 * 1000); // Clean up every 5 minutes
