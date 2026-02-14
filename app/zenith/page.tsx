@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import React from "react";
 
@@ -10,63 +10,184 @@ const roadmapStages = [
   {
     stage: "UI Development",
     status: "in-progress",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="3" strokeDasharray="4 4" />
-        <circle cx="16" cy="16" r="4" fill="currentColor" />
-      </svg>
-    ),
     description: "Building the beautiful interface with Skia graphics",
   },
   {
     stage: "Backend Integration",
     status: "upcoming",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" />
-        <line x1="16" y1="16" x2="16" y2="8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="16" y1="16" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    ),
     description: "Connecting audio engine to the interface",
   },
   {
     stage: "Testing",
     status: "upcoming",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" />
-        <line x1="16" y1="16" x2="16" y2="8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="16" y1="16" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    ),
     description: "Internal testing and optimization",
   },
   {
     stage: "Beta Release",
     status: "upcoming",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" />
-        <line x1="16" y1="16" x2="16" y2="8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="16" y1="16" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    ),
     description: "Early access for the community",
   },
   {
     stage: "Full Release",
     status: "upcoming",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" />
-        <line x1="16" y1="16" x2="16" y2="8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="16" y1="16" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    ),
     description: "Official public release",
   },
 ];
+
+const ZenithRoadmapItem = React.memo(({ stage, index, isVisible }: { stage: typeof roadmapStages[0]; index: number; isVisible: boolean }) => {
+  return (
+    <motion.div
+      className="relative flex items-center gap-8 pb-20"
+      initial={{ opacity: 0, x: -100 }}
+      animate={isVisible ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
+    >
+      {/* Timeline node */}
+      <motion.div
+        className={`relative z-20 w-20 h-20 rounded-full flex items-center justify-center flex-shrink-0 ${
+          stage.status === "in-progress"
+            ? "bg-light-bg border-4 border-primary text-primary shadow-lg shadow-primary/30"
+            : stage.status === "completed"
+            ? "bg-light-bg border-4 border-accent-green text-accent-green shadow-lg shadow-accent-green/30"
+            : "bg-light-bg border-4 border-gray-700 text-gray-600"
+        }`}
+        whileHover={{ scale: 1.05 }}
+        initial={{ scale: 0, rotate: -180 }}
+        animate={isVisible ? {
+          scale: 1,
+          rotate: 0
+        } : {}}
+        transition={{
+          duration: 0.8,
+          delay: index * 0.2,
+          ease: "easeOut"
+        }}
+      >
+        {stage.status === "in-progress" ? (
+          <motion.div
+            whileHover={{ rotate: 720 }}
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: "center" }}
+            >
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="3" strokeDasharray="4 4" />
+                <circle cx="16" cy="16" r="4" fill="currentColor" />
+              </svg>
+            </motion.div>
+          </motion.div>
+        ) : (
+          <motion.svg
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" />
+            <g style={{ transformOrigin: "16px 16px" }}>
+              <motion.line
+                x1="16"
+                y1="16"
+                x2="16"
+                y2="8"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                animate={{ rotate: 0 }}
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              />
+            </g>
+            <g style={{ transformOrigin: "16px 16px" }}>
+              <motion.line
+                x1="16"
+                y1="16"
+                x2="20"
+                y2="12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                animate={{ rotate: 0 }}
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              />
+            </g>
+          </motion.svg>
+        )}
+
+        {/* Subtle pulsing for active stage */}
+        {stage.status === "in-progress" && (
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-primary/50"
+            initial={{ scale: 1, opacity: 0.5 }}
+            animate={{
+              scale: [1.1, 1.2, 1.1],
+              opacity: [0.5, 0.2, 0.5]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        )}
+      </motion.div>
+
+      {/* Content card */}
+      <motion.div
+        className="flex-1 glass rounded-2xl p-8 border border-gray-800/50"
+        initial={{ opacity: 0, y: 50 }}
+        animate={isVisible ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, delay: index * 0.2 + 0.1, ease: "easeOut" }}
+        whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(99, 102, 241, 0.2)" }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <motion.h3
+            className="text-2xl font-bold"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isVisible ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: index * 0.2 + 0.2 }}
+          >
+            {stage.stage}
+          </motion.h3>
+
+          {stage.status === "in-progress" && (
+            <motion.span
+              className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold border border-primary/30"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.2 + 0.4 }}
+            >
+              In Progress
+            </motion.span>
+          )}
+        </div>
+
+        <motion.p
+          className="text-gray-300 leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
+        >
+          {stage.description}
+        </motion.p>
+      </motion.div>
+    </motion.div>
+  );
+});
+
+ZenithRoadmapItem.displayName = "ZenithRoadmapItem";
 
 export default function ZenithPage() {
   const heroRef = useRef(null);
@@ -286,157 +407,12 @@ export default function ZenithPage() {
               />
               
               {roadmapStages.map((stage, index) => (
-                <React.Fragment key={stage.stage}>
-                  <motion.div
-                    key={stage.stage}
-                    className="relative flex items-center gap-8 pb-20"
-                    initial={{ opacity: 0, x: -100 }}
-                    animate={roadmapInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
-                  >
-                    {/* Timeline node */}
-                    <motion.div
-                      className={`relative z-20 w-20 h-20 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        stage.status === "in-progress"
-                          ? "bg-light-bg border-4 border-primary text-primary shadow-lg shadow-primary/30"
-                          : stage.status === "completed"
-                          ? "bg-light-bg border-4 border-accent-green text-accent-green shadow-lg shadow-accent-green/30"
-                          : "bg-light-bg border-4 border-gray-700 text-gray-600"
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={roadmapInView ? { 
-                        scale: 1, 
-                        rotate: 0 
-                      } : {}}
-                      transition={{ 
-                        duration: 0.8, 
-                        delay: index * 0.2, 
-                        ease: "easeOut"
-                      }}
-                    >
-                      {stage.status === "in-progress" ? (
-                        <motion.div
-                          whileHover={{ rotate: 720 }}
-                        >
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                            style={{ transformOrigin: "center" }}
-                          >
-                            <svg
-                              width="32"
-                              height="32"
-                              viewBox="0 0 32 32"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="3" strokeDasharray="4 4" />
-                              <circle cx="16" cy="16" r="4" fill="currentColor" />
-                            </svg>
-                          </motion.div>
-                        </motion.div>
-                      ) : (
-                        <motion.svg
-                          width="32"
-                          height="32"
-                          viewBox="0 0 32 32"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          whileHover={{ rotate: 360 }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
-                        >
-                          <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2.5" />
-                          <g style={{ transformOrigin: "16px 16px" }}>
-                            <motion.line
-                              x1="16"
-                              y1="16"
-                              x2="16"
-                              y2="8"
-                              stroke="currentColor"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                              animate={{ rotate: 0 }}
-                              whileHover={{ rotate: 360 }}
-                              transition={{ duration: 0.3, ease: "easeOut" }}
-                            />
-                          </g>
-                          <g style={{ transformOrigin: "16px 16px" }}>
-                            <motion.line
-                              x1="16"
-                              y1="16"
-                              x2="20"
-                              y2="12"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              animate={{ rotate: 0 }}
-                              whileHover={{ rotate: 360 }}
-                              transition={{ duration: 0.3, ease: "easeOut" }}
-                            />
-                          </g>
-                        </motion.svg>
-                      )}
-                      
-                      {/* Subtle pulsing for active stage */}
-                      {stage.status === "in-progress" && (
-                        <motion.div
-                          className="absolute inset-0 rounded-full border-2 border-primary/50"
-                          initial={{ scale: 1, opacity: 0.5 }}
-                          animate={{ 
-                            scale: [1.1, 1.2, 1.1], 
-                            opacity: [0.5, 0.2, 0.5] 
-                          }}
-                          transition={{ 
-                            duration: 3, 
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                          }}
-                        />
-                      )}
-                    </motion.div>
-
-                    {/* Content card */}
-                    <motion.div
-                      className="flex-1 glass rounded-2xl p-8 border border-gray-800/50"
-                      initial={{ opacity: 0, y: 50 }}
-                      animate={roadmapInView ? { opacity: 1, y: 0 } : {}}
-                      transition={{ duration: 0.8, delay: index * 0.2 + 0.1, ease: "easeOut" }}
-                      whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(99, 102, 241, 0.2)" }}
-                    >
-                      <div className="flex items-center gap-3 mb-4">
-                        <motion.h3
-                          className="text-2xl font-bold"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={roadmapInView ? { opacity: 1, x: 0 } : {}}
-                          transition={{ duration: 0.6, delay: index * 0.2 + 0.2 }}
-                        >
-                          {stage.stage}
-                        </motion.h3>
-                        
-                        {stage.status === "in-progress" && (
-                          <motion.span
-                            className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold border border-primary/30"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={roadmapInView ? { opacity: 1, scale: 1 } : {}}
-                            transition={{ duration: 0.5, delay: index * 0.2 + 0.4 }}
-                          >
-                            In Progress
-                          </motion.span>
-                        )}
-                      </div>
-                      
-                      <motion.p
-                        className="text-gray-300 leading-relaxed"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={roadmapInView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
-                      >
-                        {stage.description}
-                      </motion.p>
-                    </motion.div>
-                  </motion.div>
-                </React.Fragment>
+                <ZenithRoadmapItem
+                  key={stage.stage}
+                  stage={stage}
+                  index={index}
+                  isVisible={roadmapInView}
+                />
               ))}
             </div>
           </div>
